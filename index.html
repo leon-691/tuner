@@ -1,5 +1,1604 @@
-<!DOCTYPE html><!--
+<!DOCTYPE html>
+<!--
   Tuner Senar — Gitar · Bass · Ukulele
-  © 2026 EL Hak cipta dilindungi undang-undang.
-  Dibuat pertama kali: 20 February 2026.
---><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="dark light"><meta name="description" content="Tuner gitar, bass, dan ukulele. Deteksi pitch real-time."><title>Tuner Senar — Gitar · Bass · Ukulele</title><style>:root{--bg-deep:#141110;--bg-panel:#1F1A15;--bg-panel-2:#241E17;--wood-border:#3B2E22;--wood-border-soft:#2C2219;--brass:#C6A15B;--brass-bright:#E8CE95;--brass-dim:#8A7148;--cream:#F3E8D6;--muted:#9C9284;--green:#6FBE7A;--amber:#E3A94A;--red:#D9694B;--shadow: rgba(0,0,0,.55);--grad1:#2a2115;--grad2:#1a140d;--texture-line: rgba(255,255,255,.012);--radius-sm:7px;--radius-md:12px;--radius-lg:20px;--mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;--sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif}[data-theme=light]{--bg-deep:#EDE4D3;--bg-panel:#F7F1E4;--bg-panel-2:#EFE6D4;--wood-border:#C9B896;--wood-border-soft:#DCD0B8;--brass:#9C7A3C;--brass-bright:#7A5D28;--brass-dim:#8A6B35;--cream:#2B2318;--muted:#6B6152;--green:#2F7A3D;--amber:#8C5714;--red:#9C3A24;--shadow: rgba(80,60,30,.18);--grad1:#FFF8E8;--grad2:#E8DCC0;--texture-line: rgba(90,70,40,.035)}*{box-sizing:border-box}html,body{height:100%}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 900px 500px at 50% -10%,var(--grad1) 0%,transparent 60%),radial-gradient(ellipse 1200px 800px at 50% 110%,var(--grad2) 0%,transparent 60%),var(--bg-deep);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;display:flex;justify-content:center;padding:28px 16px 56px;position:relative;overflow-x:hidden;transition:background-color .3s}body:before{content:"";position:fixed;inset:0;background-image:repeating-linear-gradient(115deg,var(--texture-line) 0px,var(--texture-line) 1px,transparent 1px,transparent 5px);pointer-events:none;z-index:0}.app{width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px;position:relative;z-index:1}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--brass-bright),var(--brass) 60%,var(--brass-dim) 100%);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--bg-deep);font-weight:700;box-shadow:0 3px 10px -2px #0009,inset 0 1px 1px #fff6;flex-shrink:0}.brand-text h1{font-family:var(--mono);font-size:1.05rem;font-weight:700;letter-spacing:.02em;color:var(--brass-bright);margin:0}.brand-text p{font-size:.68rem;color:var(--muted);margin:2px 0 0;letter-spacing:.02em}.topbar-actions{display:flex;gap:8px;flex-shrink:0}.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-panel);border:1px solid var(--wood-border);color:var(--brass);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s,transform .2s;flex-shrink:0}.icon-btn:hover{border-color:var(--brass);color:var(--brass-bright)}.icon-btn:active{transform:scale(.92)}.icon-btn.small{width:32px;height:32px;font-size:.85rem}.icon-btn.hidden{display:none!important}.instrument-tabs{position:relative;display:flex;background:var(--bg-panel);border:1px solid var(--wood-border);border-radius:var(--radius-md);padding:4px}.tab-underline{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);background:linear-gradient(160deg,var(--brass-bright),var(--brass));border-radius:var(--radius-sm);transition:transform .32s cubic-bezier(.4,0,.2,1);box-shadow:0 3px 10px -3px #00000080;z-index:0}.tab{position:relative;z-index:1;flex:1;padding:10px 0;text-align:center;font-family:var(--mono);font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:transparent;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:color .25s}.tab.active{color:var(--bg-deep)}.subtoolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:170px}.field-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}.field-row{display:flex;gap:6px;align-items:center}select{background:var(--bg-panel);border:1px solid var(--wood-border);color:var(--cream);padding:9px 10px;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.82rem;cursor:pointer;appearance:none;flex:1;min-width:0;background-image:linear-gradient(45deg,transparent 50%,var(--brass) 50%),linear-gradient(135deg,var(--brass) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}select:focus-visible{outline:2px solid var(--brass-bright);outline-offset:1px}.mode-toggle{display:flex;background:var(--bg-panel);border:1px solid var(--wood-border);border-radius:var(--radius-sm);overflow:hidden}.mode-btn{padding:9px 15px;font-size:.74rem;font-family:var(--sans);font-weight:600;background:transparent;border:none;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;border-right:1px solid var(--wood-border)}.mode-btn:last-child{border-right:none}.mode-btn.active{background:var(--brass);color:var(--bg-deep)}.panel{background:var(--bg-panel);border:1px solid var(--wood-border);border-radius:var(--radius-lg);padding:26px 20px 22px;box-shadow:0 24px 48px -22px var(--shadow),inset 0 1px #ffffff08;display:flex;flex-direction:column;align-items:center;gap:18px;transition:box-shadow .4s}.panel.glow{box-shadow:0 24px 48px -22px var(--shadow),inset 0 1px #ffffff08,0 0 0 1px var(--green),0 0 32px -6px var(--green)}.meter-wrap{width:100%;display:flex;flex-direction:column;align-items:center}.meter{width:100%;max-width:340px;display:block;overflow:visible}.readout{text-align:center;margin-top:-14px;transition:opacity .35s}.readout.idle{opacity:.4}.note-name{font-family:var(--mono);font-size:clamp(2.3rem,11vw,3.1rem);font-weight:700;color:var(--cream);line-height:1;transition:color .25s}.note-name.state-green{color:var(--green)}.note-name.state-amber{color:var(--amber)}.note-name.state-red{color:var(--red)}.freq-row{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-top:8px;display:flex;gap:7px;justify-content:center;align-items:baseline;flex-wrap:wrap}#freqVal{color:var(--brass-bright);font-size:1.02rem;font-weight:600}.target-freq{color:var(--muted)}.cents-val{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:5px}.hint{font-size:.74rem;color:var(--amber);margin-top:6px;min-height:1.1em;font-weight:600}.hint.ok{color:var(--green)}.status-line{font-size:.76rem;color:var(--muted);text-align:center;min-height:1.3em;margin-top:2px;line-height:1.4}.status-line.warn{color:var(--red)}.status-line.success{color:var(--green);font-weight:700}.signal-meters{display:flex;gap:18px;margin-top:2px;width:100%;max-width:260px}.meter-bar{flex:1;display:flex;flex-direction:column;gap:4px}.meter-bar-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.bar{height:5px;background:var(--bg-deep);border-radius:3px;overflow:hidden;border:1px solid var(--wood-border-soft)}.bar i{display:block;height:100%;width:0%;background:var(--brass);border-radius:3px;transition:width .12s linear}.bar.clarity i{background:var(--green)}.wave-wrap{width:100%;max-width:340px;display:flex;flex-direction:column;gap:4px}.wave-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:center}.wave-frame{width:100%;height:52px;background:var(--bg-deep);border:1px solid var(--wood-border-soft);border-radius:var(--radius-sm);overflow:hidden}#waveCanvas{display:block;width:100%;height:100%}.pegs-row{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;width:100%}.peg{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--bg-panel-2);border:1.5px solid var(--wood-border);border-radius:16px;padding:9px 7px 7px;min-width:52px;cursor:pointer;transition:border-color .2s,transform .2s,background .2s;color:var(--cream);font-family:var(--mono);user-select:none}.peg:hover{border-color:var(--brass-dim)}.peg .peg-note{font-size:.92rem;font-weight:700}.peg .peg-label{font-size:.54rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.peg .peg-play{margin-top:1px;font-size:.72rem;color:var(--brass);background:none;border:none;cursor:pointer;padding:2px 8px;line-height:1}.peg .peg-play:hover{color:var(--brass-bright)}.peg.nearest{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass) inset}.peg.selected{border-color:var(--brass-bright);background:var(--bg-panel);transform:translateY(-2px) rotate(-1.5deg)}.peg.in-tune{border-color:var(--green);box-shadow:0 0 12px -2px var(--green)}.peg:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}.mic-btn{display:flex;align-items:center;gap:10px;justify-content:center;padding:14px 26px;border-radius:999px;border:1.5px solid var(--brass);background:linear-gradient(160deg,var(--brass-bright),var(--brass));color:var(--bg-deep);font-family:var(--mono);font-weight:700;font-size:.86rem;letter-spacing:.03em;cursor:pointer;transition:background .25s,color .25s,border-color .25s;width:100%;max-width:270px}.mic-btn:active{transform:scale(.98)}.mic-btn.active{background:transparent;color:var(--green);border-color:var(--green);animation:pulseRing 2.2s ease-in-out infinite}.mic-icon{width:9px;height:9px;border-radius:50%;background:currentColor;display:inline-block}.mic-btn.active .mic-icon{animation:blink 1.5s ease-in-out infinite}@keyframes pulseRing{0%,to{box-shadow:0 0 #6fbe7a59}50%{box-shadow:0 0 0 9px #6fbe7a00}}@keyframes blink{0%,to{opacity:1}50%{opacity:.25}}.mic-btn:disabled{opacity:.45;cursor:not-allowed;animation:none}.mic-hint{font-size:.66rem;color:var(--muted);text-align:center;margin:2px 0 0}.mic-hint kbd{font-family:var(--mono);background:var(--bg-panel-2);border:1px solid var(--wood-border);border-radius:4px;padding:1px 6px;font-size:.62rem;color:var(--brass-dim)}.privacy-note{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.55;padding:0 8px}.tips-note{font-size:.68rem;color:var(--brass-dim);text-align:center;line-height:1.55;padding:0 8px;margin-top:-6px}.foot{font-size:.62rem;color:var(--brass-dim);text-align:center;padding-top:2px;letter-spacing:.02em}.modal-overlay{position:fixed;inset:0;background:#0a0806b8;backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .25s;z-index:50}.modal-overlay.open{opacity:1;visibility:visible}.modal-card{background:var(--bg-panel);border:1px solid var(--wood-border);border-radius:var(--radius-lg);padding:22px;width:min(92vw,380px);max-height:86vh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 60px -20px #000000b3;transform:translateY(10px);transition:transform .25s}.modal-overlay.open .modal-card{transform:translateY(0)}.modal-head{display:flex;align-items:center;justify-content:space-between}.modal-head h2{font-family:var(--mono);font-size:1rem;color:var(--brass-bright);margin:0}.set-field{display:flex;flex-direction:column;gap:6px}.set-field-top{display:flex;justify-content:space-between;font-size:.78rem;color:var(--cream)}.set-field-top span:last-child{color:var(--brass);font-family:var(--mono)}input[type=range]{width:100%;accent-color:var(--brass);cursor:pointer}input[type=text],input[type=number]{background:var(--bg-panel-2);border:1px solid var(--wood-border);color:var(--cream);padding:9px 10px;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.85rem;width:100%}.set-desc{font-size:.66rem;color:var(--muted);line-height:1.4}.reset-btn{background:var(--bg-panel-2);border:1px solid var(--wood-border);color:var(--cream);padding:9px 12px;border-radius:var(--radius-sm);font-size:.78rem;cursor:pointer;font-family:var(--sans);transition:border-color .2s}.reset-btn:hover{border-color:var(--brass)}.primary-btn{background:linear-gradient(160deg,var(--brass-bright),var(--brass));border:1px solid var(--brass);color:var(--bg-deep);padding:10px 12px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--sans)}.btn-row{display:flex;gap:10px}.btn-row .reset-btn,.btn-row .primary-btn{flex:1}.help-box{border-top:1px solid var(--wood-border-soft);padding-top:14px;font-size:.72rem;color:var(--muted);line-height:1.6}.help-box b{color:var(--brass-bright)}.cte-row{display:flex;align-items:center;gap:8px}.cte-label{font-size:.72rem;color:var(--muted);width:58px;flex-shrink:0;font-family:var(--mono)}.cte-note{flex:1.2}.cte-octave{flex:.7;text-align:center}.cte-freq{font-size:.66rem;color:var(--brass-dim);font-family:var(--mono);width:64px;text-align:right;flex-shrink:0}.cte-warning{font-size:.72rem;color:var(--red);min-height:1.1em}*:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}@media(max-width:380px){.panel{padding:20px 14px 18px}.peg{min-width:46px;padding:8px 5px 6px}}@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}</style></head><body><div class="app"><header class="topbar"><div class="brand"><div class="brand-mark" aria-hidden="true">♪</div><div class="brand-text"><h1>Tuner</h1><p>Gitar · Bass · Ukulele</p></div></div><div class="topbar-actions"><button class="icon-btn" id="themeBtn" aria-label="Ganti ke tema terang">☀️</button><button class="icon-btn" id="settingsBtn" aria-label="Buka pengaturan">⚙</button></div></header><nav class="instrument-tabs" aria-label="Pilih instrumen"><span class="tab-underline" id="tabUnderline" aria-hidden="true"></span><button class="tab" data-instrument="guitar" aria-pressed="true">Gitar</button><button class="tab" data-instrument="bass" aria-pressed="false">Bass</button><button class="tab" data-instrument="ukulele" aria-pressed="false">Ukulele</button></nav><div class="subtoolbar"><label class="field"><span class="field-label">Setelan</span><div class="field-row"><select id="tuningSelect" aria-label="Pilih setelan tuning"></select><button class="icon-btn small" id="addTuningBtn" aria-label="Create">+</button><button class="icon-btn small hidden" id="deleteTuningBtn" aria-label="Delete">🗑</button></div></label><div class="mode-toggle" role="group" aria-label="Detect"><button class="mode-btn active" data-mode="auto">Otomatis</button><button class="mode-btn" data-mode="manual">Manual</button></div></div><main class="panel" id="tunerPanel"><div class="meter-wrap"><svg class="meter" id="meterSvg" viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meter penyetelan nada"><path id="meterTrack" d="M30,190 A150,150 0 0 1 330,190" stroke="#3B2E22" stroke-width="10" fill="none" stroke-linecap="round"/><path id="meterInTuneZone" d="M156.5,41.9 A150,150 0 0 1 203.5,41.9" stroke="#6FBE7A" stroke-width="13" fill="none" stroke-linecap="round" opacity="0.85"/><text id="flatLabel" x="16" y="200" font-family="ui-monospace, monospace" font-size="15" fill="#8A7148">♭</text><text id="sharpLabel" x="336" y="200" font-family="ui-monospace, monospace" font-size="15" fill="#8A7148">♯</text><g id="ticks"></g><g id="needleGroup"><line id="needleLine" x1="180" y1="190" x2="180" y2="54" stroke="#E8CE95" stroke-width="3" stroke-linecap="round"/><circle id="needlePivot" cx="180" cy="190" r="7" fill="#C6A15B" stroke="#141110" stroke-width="2"/></g></svg><div class="readout idle" id="readout"><div class="note-name" id="noteName">–</div><div class="freq-row"><span id="freqVal">0.0</span><span class="unit">Hz</span><span class="target-freq" id="targetFreq"></span></div><div class="cents-val" id="centsVal">– cents</div><div class="hint" id="hintText"></div></div><div class="status-line" id="statusLine" role="status" aria-live="polite" aria-atomic="true">Tekan &quot;Mulai Tuning&quot; lalu izinkan akses mikrofon</div><div class="signal-meters"><div class="meter-bar"><span class="meter-bar-label">Level</span><div class="bar"><i id="levelBar"></i></div></div><div class="meter-bar"><span class="meter-bar-label">Kejelasan</span><div class="bar clarity"><i id="clarityBar"></i></div></div></div></div><div class="wave-wrap"><div class="wave-frame"><canvas id="waveCanvas"></canvas></div><span class="wave-label">Bentuk gelombang sinyal</span></div><div class="pegs-row" id="stringRow"></div><button class="mic-btn" id="micBtn"><span class="mic-icon" aria-hidden="true"></span><span id="micBtnLabel">Mulai Tuning</span></button><p class="mic-hint">Pintasan: tekan <kbd>Spasi</kbd> untuk mulai/berhenti</p></main><p class="privacy-note">🔒 Semua analisis suara diproses langsung di perangkat Anda — tidak ada audio yang direkam, disimpan, atau dikirim ke pihak mana pun.</p><p class="tips-note">Tips: pilih instrumen &amp; setelan di atas, izinkan mikrofon, lalu petik senar satu per satu di ruangan yang tidak terlalu berisik.</p><footer class="foot"><br>© 2026 EL Hak cipta dilindungi.</footer></div><div class="modal-overlay" id="settingsOverlay"><div class="modal-card"><div class="modal-head"><h2>Setting</h2><button class="icon-btn" id="closeSettings" aria-label="Tutup pengaturan">✕</button></div><div class="set-field"><div class="set-field-top"><span>Kalibrasi A4</span><span id="a4Val">440 Hz</span></div><input type="range" id="a4Range" min="430" max="450" step="1" value="440" aria-label="Kalibrasi A4 dalam Hz"><p class="set-desc">Standar internasional adalah 440 Hz. Ubah hanya jika Anda menyetel bersama alat lain dengan referensi berbeda.</p></div><div class="set-field"><div class="set-field-top"><span>Sensitivitas Mikrofon</span><span id="sensVal">5</span></div><input type="range" id="sensRange" min="1" max="10" step="1" value="5" aria-label="Sensitivitas mikrofon"><p class="set-desc">Naikkan jika suara senar terlalu pelan untuk terdeteksi. Turunkan jika suara sekitar ikut terbaca.</p></div><button class="reset-btn" id="resetSettings">Kembalikan ke Default</button><div class="help-box"><p><b>Cara pakai:</b> pilih instrumen &amp; setelan, tekan Mulai Tuning, lalu petik satu senar. Jarum akan bergerak ke zona hijau saat nada pas. Mode Otomatis mendeteksi senar terdekat secara otomatis; Mode Manual mengunci ke satu senar pilihan Anda. Tanda &quot;+&quot; di sebelah pilihan setelan bisa dipakai untuk membuat tuning kustom sendiri.</p></div></div></div><div class="modal-overlay" id="tuningEditorOverlay"><div class="modal-card"><div class="modal-head"><h2>Tuning Kustom</h2><button class="icon-btn" id="closeTuningEditor" aria-label="Tutup editor tuning">✕</button></div><div class="set-field"><span class="field-label">Nama Tuning</span><input type="text" id="tuningEditorName" placeholder="mis. Setelan lagu X"></div><div class="set-field" id="tuningEditorRowsWrap"><span class="field-label">Nada per Senar</span><div id="tuningEditorRows" style="display:flex; flex-direction:column; gap:8px;"></div></div><div class="cte-warning" id="tuningEditorWarning"></div><div class="btn-row"><button class="reset-btn" id="tuningEditorCancel">Batal</button><button class="primary-btn" id="tuningEditorSave">Simpan Tuning</button></div></div></div><script>(function(){"use strict";const rt=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];function ct(t,n){return rt.indexOf(t)+(n+1)*12}function lt(t,n){return n*Math.pow(2,(t-69)/12)}function ut(t,n){return 1200*Math.log2(t/n)}const x={guitar:{standard:{label:"Standar (E A D G B E)",strings:[{string:6,note:"E",octave:2},{string:5,note:"A",octave:2},{string:4,note:"D",octave:3},{string:3,note:"G",octave:3},{string:2,note:"B",octave:3},{string:1,note:"E",octave:4}]},dropD:{label:"Drop D (D A D G B E)",strings:[{string:6,note:"D",octave:2},{string:5,note:"A",octave:2},{string:4,note:"D",octave:3},{string:3,note:"G",octave:3},{string:2,note:"B",octave:3},{string:1,note:"E",octave:4}]},halfStepDown:{label:"Setengah Laras Turun (Eb Ab Db Gb Bb Eb)",strings:[{string:6,note:"D#",octave:2},{string:5,note:"G#",octave:2},{string:4,note:"C#",octave:3},{string:3,note:"F#",octave:3},{string:2,note:"A#",octave:3},{string:1,note:"D#",octave:4}]},fullStepDown:{label:"Satu Laras Turun (D G C F A D)",strings:[{string:6,note:"D",octave:2},{string:5,note:"G",octave:2},{string:4,note:"C",octave:3},{string:3,note:"F",octave:3},{string:2,note:"A",octave:3},{string:1,note:"D",octave:4}]},openG:{label:"Open G (D G D G B D)",strings:[{string:6,note:"D",octave:2},{string:5,note:"G",octave:2},{string:4,note:"D",octave:3},{string:3,note:"G",octave:3},{string:2,note:"B",octave:3},{string:1,note:"D",octave:4}]},openD:{label:"Open D (D A D F# A D)",strings:[{string:6,note:"D",octave:2},{string:5,note:"A",octave:2},{string:4,note:"D",octave:3},{string:3,note:"F#",octave:3},{string:2,note:"A",octave:3},{string:1,note:"D",octave:4}]}},bass:{standard:{label:"Standar (E A D G)",strings:[{string:4,note:"E",octave:1},{string:3,note:"A",octave:1},{string:2,note:"D",octave:2},{string:1,note:"G",octave:2}]},dropD:{label:"Drop D (D A D G)",strings:[{string:4,note:"D",octave:1},{string:3,note:"A",octave:1},{string:2,note:"D",octave:2},{string:1,note:"G",octave:2}]},halfStepDown:{label:"Setengah Laras Turun (Eb Ab Db Gb)",strings:[{string:4,note:"D#",octave:1},{string:3,note:"G#",octave:1},{string:2,note:"C#",octave:2},{string:1,note:"F#",octave:2}]}},ukulele:{standardHighG:{label:"Standar High-G (G C E A)",strings:[{string:4,note:"G",octave:4},{string:3,note:"C",octave:4},{string:2,note:"E",octave:4},{string:1,note:"A",octave:4}]},lowG:{label:"Low-G (G C E A)",strings:[{string:4,note:"G",octave:3},{string:3,note:"C",octave:4},{string:2,note:"E",octave:4},{string:1,note:"A",octave:4}]},baritone:{label:"Baritone (D G B E)",strings:[{string:4,note:"D",octave:3},{string:3,note:"G",octave:3},{string:2,note:"B",octave:3},{string:1,note:"E",octave:4}]}}},N={instrument:"guitar",tuning:"standard",mode:"auto",selectedString:null,a4:440,sensitivity:5,theme:"dark"};let i=xt();function xt(){try{const t=localStorage.getItem("guitarTunerState_v1");if(!t)return Object.assign({},N);const n=JSON.parse(t);return Object.assign({},N,n)}catch(t){return Object.assign({},N)}}function C(){try{localStorage.setItem("guitarTunerState_v1",JSON.stringify(i))}catch(t){}}x[i.instrument]||(i.instrument=N.instrument);function Lt(){try{const t=localStorage.getItem("guitarTunerCustomTunings_v1"),n={guitar:{},bass:{},ukulele:{}};if(!t)return n;const a=JSON.parse(t);return Object.assign(n,a)}catch(t){return{guitar:{},bass:{},ukulele:{}}}}function dt(){try{localStorage.setItem("guitarTunerCustomTunings_v1",JSON.stringify(S))}catch(t){}}let S=Lt();function Z(t){return Object.assign({},x[t],S[t])}function gt(t,n){return!!(S[t]&&Object.prototype.hasOwnProperty.call(S[t],n))}Z(i.instrument)[i.tuning]||(i.tuning=Object.keys(x[i.instrument])[0]);function K(){const t=Z(i.instrument);return(t[i.tuning]||Object.values(t)[0]).strings.map(function(a){const s=ct(a.note,a.octave),o=lt(s,i.a4);return{string:a.string,note:a.note,octave:a.octave,freq:o}})}function mt(t,n){let a=t[0],s=1/0;for(let o=0;o<t.length;o++){const r=Math.abs(ut(n,t[o].freq));r<s&&(s=r,a=t[o])}return a}function It(){const t=K();let n=1/0,a=-1/0;for(let o=0;o<t.length;o++)t[o].freq<n&&(n=t[o].freq),t[o].freq>a&&(a=t[o].freq);const s=Math.pow(2,500/1200);return{min:n/s,max:a*s}}function Dt(t,n,a,s){const o=t.length;let r=0;for(let l=0;l<o;l++)r+=t[l];r/=o;let c=0;for(let l=0;l<o;l++){const P=t[l]-r;c+=P*P}c=Math.sqrt(c/o);const m=Math.max(1,Math.floor(n/s)),u=Math.min(o-2,Math.ceil(n/a));if(u<=m+2)return{freq:0,clarity:0,rms:c};const d=new Float32Array(u+2);for(let l=m;l<=u;l++){let P=0,at=0;const Yt=o-l;for(let Q=0;Q<Yt;Q++){const ot=t[Q]-r,st=t[Q+l]-r;P+=ot*st,at+=ot*ot+st*st}d[l]=at>0?2*P/at:0}const h=[];for(let l=m+1;l<u;l++)d[l-1]<d[l]&&d[l]>=d[l+1]&&d[l]>0&&h.push(l);if(h.length===0)return{freq:0,clarity:0,rms:c};let V=-1/0;for(let l=0;l<h.length;l++)d[h[l]]>V&&(V=d[h[l]]);const it=V*.9;let f=null;for(let l=0;l<h.length;l++)if(d[h[l]]>=it){f=h[l];break}f===null&&(f=h[0]);const Wt=f>m?f-1:f,Jt=f<u?f+1:f,St=d[Wt],Xt=d[f],At=d[Jt];let Y=f;const wt=St-2*Xt+At;return wt!==0&&(Y=f+(St-At)/(2*wt)),Y<=0&&(Y=f),{freq:n/Y,clarity:d[f],rms:c}}let v=null,L=null,G=null,B=null,k=null,p=null,T=null,E=!1,A=!1,$=0,z=null,O={min:60,max:600},w=null,I=null,ft=0;function vt(){return v||(v=new(window.AudioContext||window.webkitAudioContext)),v}let D=null;async function ht(){try{"wakeLock"in navigator&&(D=await navigator.wakeLock.request("screen"),D.addEventListener("release",function(){D=null}))}catch(t){}}function Mt(){if(D){try{D.release()}catch(t){}D=null}}document.addEventListener("visibilitychange",function(){document.visibilityState==="visible"&&E&&!D&&ht()});function M(){O=It();const t=i.instrument==="bass"?4096:2048;p&&p.fftSize!==t&&(p.fftSize=t,T=new Float32Array(p.fftSize)),B&&B.frequency.setTargetAtTime(Math.max(20,O.min*.6),v.currentTime,.01),k&&k.frequency.setTargetAtTime(Math.min(5e3,O.max*4),v.currentTime,.01)}async function pt(){if(A||E)return;A=!0;const t=++$;if(e.micBtn.disabled=!0,!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){b("Browser ini tidak mendukung akses mikrofon.","warn"),A=!1,e.micBtn.disabled=!1;return}if(!window.isSecureContext){b("Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.","warn"),A=!1,e.micBtn.disabled=!1;return}try{L=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:!1,noiseSuppression:!1,autoGainControl:!1,channelCount:1}})}catch(n){let a="Tidak dapat mengakses mikrofon.";n&&n.name==="NotAllowedError"?a="Akses mikrofon ditolak. Izinkan akses mikrofon di pengaturan browser, lalu coba lagi.":n&&n.name==="NotFoundError"&&(a="Mikrofon tidak ditemukan. Pastikan perangkat memiliki mikrofon aktif."),b(a,"warn"),A=!1,e.micBtn.disabled=!1;return}if(t!==$){L.getTracks().forEach(function(n){n.stop()}),L=null,A=!1,e.micBtn.disabled=!1;return}vt(),v.state==="suspended"&&await v.resume(),G=v.createMediaStreamSource(L),B=v.createBiquadFilter(),B.type="highpass",B.Q.value=.707,k=v.createBiquadFilter(),k.type="lowpass",k.Q.value=.707,p=v.createAnalyser(),p.smoothingTimeConstant=0,G.connect(B),B.connect(k),k.connect(p),M(),(!T||T.length!==p.fftSize)&&(T=new Float32Array(p.fftSize)),E=!0,A=!1,e.micBtn.disabled=!1,Ct(),b("Mendengarkan... petik salah satu senar",""),g.lastValidAt=performance.now(),z=setInterval(Ot,45),requestAnimationFrame(yt),ht()}function Et(){if($++,E=!1,A=!1,e.micBtn.disabled=!1,z&&(clearInterval(z),z=null),L&&(L.getTracks().forEach(function(t){t.stop()}),L=null),G){try{G.disconnect()}catch(t){}G=null}if(B){try{B.disconnect()}catch(t){}B=null}if(k){try{k.disconnect()}catch(t){}k=null}if(p){try{p.disconnect()}catch(t){}p=null}Ct(),b('Tekan "Mulai Tuning" untuk mendengarkan',""),R(),J(),Mt()}function qt(t){if(vt(),v.state==="suspended"&&v.resume(),w)try{w.stop()}catch(a){}w=v.createOscillator(),I=v.createGain(),w.type="sine",w.frequency.value=t,I.gain.value=1e-4,w.connect(I),I.connect(v.destination);const n=v.currentTime;I.gain.exponentialRampToValueAtTime(.16,n+.05),I.gain.setValueAtTime(.16,n+1.3),I.gain.exponentialRampToValueAtTime(1e-4,n+1.75),w.start(n),w.stop(n+1.8),ft=performance.now()+1900,b("\u{1F50A} Memutar nada referensi \u2014 pakai headphone agar mikrofon tidak ikut menangkapnya","")}const Nt=.85;let g={emaCents:0,lastCandidateKey:null,candidateCount:0,displayedKey:null,lastValidAt:0,inTuneSince:0,vibrated:!1},H=0;function Gt(){return .002+(1-(i.sensitivity-1)/9)*.018}function Ot(){if(!p||performance.now()<ft)return;p.getFloatTimeDomainData(T);const t=Dt(T,v.sampleRate,O.min,O.max),n=performance.now(),a=Gt();if(Rt(t.rms,t.clarity),t.rms<a||t.freq<=0||t.clarity<Nt){n-g.lastValidAt>1300&&Vt();return}g.lastValidAt=n;let s=t.freq;const o=K();let r;i.mode==="manual"&&i.selectedString!=null?r=o.find(function(h){return h.string===i.selectedString})||mt(o,s):r=mt(o,s);const c=s/r.freq;c>1.85&&c<2.15?s=s/2:c>.43&&c<.57&&(s=s*2);const m=ut(s,r.freq),u=r.string+":"+r.note+r.octave;u===g.lastCandidateKey?g.candidateCount++:(g.lastCandidateKey=u,g.candidateCount=1),(g.candidateCount>=2||g.displayedKey===null)&&(g.displayedKey=u),u===g.displayedKey?g.emaCents=g.emaCents+.35*(m-g.emaCents):g.emaCents=m;const d=o.find(function(h){return h.string+":"+h.note+h.octave===g.displayedKey})||r;Pt({target:d,freq:s,cents:g.emaCents,clarity:t.clarity})}let U=0;function yt(){if(!E)return;U+=(H-U)*.25;const t=Math.max(-60,Math.min(60,U));j&&j.setAttribute("transform","rotate("+(t*1.8).toFixed(2)+" 180 190)"),J(),requestAnimationFrame(yt)}const e={tabUnderline:document.getElementById("tabUnderline"),tuningSelect:document.getElementById("tuningSelect"),addTuningBtn:document.getElementById("addTuningBtn"),deleteTuningBtn:document.getElementById("deleteTuningBtn"),stringRow:document.getElementById("stringRow"),micBtn:document.getElementById("micBtn"),micBtnLabel:document.getElementById("micBtnLabel"),noteName:document.getElementById("noteName"),freqVal:document.getElementById("freqVal"),targetFreq:document.getElementById("targetFreq"),centsVal:document.getElementById("centsVal"),hintText:document.getElementById("hintText"),statusLine:document.getElementById("statusLine"),levelBar:document.getElementById("levelBar"),clarityBar:document.getElementById("clarityBar"),readout:document.getElementById("readout"),panel:document.getElementById("tunerPanel"),themeBtn:document.getElementById("themeBtn"),settingsBtn:document.getElementById("settingsBtn"),closeSettings:document.getElementById("closeSettings"),settingsOverlay:document.getElementById("settingsOverlay"),a4Range:document.getElementById("a4Range"),a4Val:document.getElementById("a4Val"),sensRange:document.getElementById("sensRange"),sensVal:document.getElementById("sensVal"),resetSettings:document.getElementById("resetSettings"),tuningEditorOverlay:document.getElementById("tuningEditorOverlay"),tuningEditorRows:document.getElementById("tuningEditorRows"),tuningEditorName:document.getElementById("tuningEditorName"),tuningEditorWarning:document.getElementById("tuningEditorWarning"),tuningEditorSave:document.getElementById("tuningEditorSave"),tuningEditorCancel:document.getElementById("tuningEditorCancel"),closeTuningEditor:document.getElementById("closeTuningEditor")},j=document.getElementById("needleGroup"),F=document.getElementById("waveCanvas"),y=F.getContext("2d");function b(t,n){e.statusLine.textContent=t,e.statusLine.className="status-line"+(n?" "+n:"")}function Ft(t){const n=Math.abs(t);return n<=5?"state-green":n<=20?"state-amber":"state-red"}function Rt(t,n){const a=Math.max(0,Math.min(100,t/.12*100)),s=Math.max(0,Math.min(100,n*100));e.levelBar.style.width=a+"%",e.clarityBar.style.width=s+"%"}function Vt(){e.readout.classList.add("idle"),e.panel.classList.remove("glow"),document.querySelectorAll(".peg").forEach(function(t){t.classList.remove("nearest","in-tune")}),g.inTuneSince=0,H=0,e.statusLine.classList.contains("warn")||b("Menunggu... petik salah satu senar","")}function R(){e.noteName.textContent="\u2013",e.noteName.className="note-name",e.freqVal.textContent="0.0",e.targetFreq.textContent="",e.centsVal.textContent="\u2013 cents",e.hintText.textContent="",e.hintText.className="hint",e.levelBar.style.width="0%",e.clarityBar.style.width="0%",e.readout.classList.add("idle"),e.panel.classList.remove("glow"),H=0,U=0,j&&j.setAttribute("transform","rotate(0 180 190)"),document.querySelectorAll(".peg").forEach(function(t){t.classList.remove("nearest","selected","in-tune")}),g={emaCents:0,lastCandidateKey:null,candidateCount:0,displayedKey:null,lastValidAt:0,inTuneSince:0,vibrated:!1}}function Pt(t){e.readout.classList.remove("idle");const n=Math.round(t.cents),a=Ft(t.cents);e.noteName.textContent=t.target.note+t.target.octave,e.noteName.className="note-name "+a,e.freqVal.textContent=t.freq.toFixed(1),e.targetFreq.textContent="(target "+t.target.freq.toFixed(2)+" Hz)",e.centsVal.textContent=(n>=0?"+":"")+n+" cents",H=t.cents;const s=performance.now();Math.abs(t.cents)<=5?(g.inTuneSince||(g.inTuneSince=s),s-g.inTuneSince>220?(e.hintText.textContent="\u{1F3AF} Selaras!",e.hintText.className="hint ok",b("\u{1F3AF} Senar "+t.target.string+" selaras","success"),e.panel.classList.add("glow"),g.vibrated||(navigator.vibrate&&navigator.vibrate(60),g.vibrated=!0)):(e.hintText.textContent="",e.panel.classList.remove("glow"))):(g.inTuneSince=0,g.vibrated=!1,e.panel.classList.remove("glow"),t.cents>5?e.hintText.textContent="\u25BC Kendurkan sedikit (terlalu tinggi)":e.hintText.textContent="\u25B2 Kencangkan sedikit (terlalu rendah)",e.hintText.className="hint",b("Mendengarkan senar "+t.target.string+" ("+t.target.note+t.target.octave+")","")),document.querySelectorAll(".peg").forEach(function(o){const r=parseInt(o.dataset.string,10)===t.target.string;o.classList.toggle("nearest",r),o.classList.toggle("in-tune",r&&Math.abs(t.cents)<=5)})}function _(){const t=e.tuningSelect;t.innerHTML="";const n=x[i.instrument],a=S[i.instrument]||{},s=document.createElement("optgroup");s.label="Bawaan",Object.keys(n).forEach(function(r){const c=document.createElement("option");c.value=r,c.textContent=n[r].label,r===i.tuning&&(c.selected=!0),s.appendChild(c)}),t.appendChild(s);const o=Object.keys(a);if(o.length){const r=document.createElement("optgroup");r.label="Kustom",o.forEach(function(c){const m=document.createElement("option");m.value=c,m.textContent=a[c].label,c===i.tuning&&(m.selected=!0),r.appendChild(m)}),t.appendChild(r)}bt()}function bt(){const t=gt(i.instrument,i.tuning);e.deleteTuningBtn.classList.toggle("hidden",!t)}function q(){const t=e.stringRow;t.innerHTML="",K().forEach(function(a){const s=document.createElement("div");s.className="peg",s.dataset.string=a.string,s.setAttribute("role","button"),s.setAttribute("tabindex","0"),s.setAttribute("aria-label","Pilih senar "+a.string+", nada "+a.note+a.octave);const o=document.createElement("button");o.className="peg-play",o.type="button",o.textContent="\u{1F50A}",o.setAttribute("aria-label","Dengarkan nada referensi "+a.note+a.octave),o.addEventListener("click",function(u){u.stopPropagation(),qt(a.freq)});const r=document.createElement("div");r.className="peg-note",r.textContent=a.note+a.octave;const c=document.createElement("div");c.className="peg-label",c.textContent="Senar "+a.string,s.appendChild(o),s.appendChild(r),s.appendChild(c);function m(){i.mode="manual",i.selectedString=a.string,C(),W(),tt()}s.addEventListener("click",m),s.addEventListener("keydown",function(u){(u.key==="Enter"||u.key===" ")&&(u.preventDefault(),m())}),t.appendChild(s)}),tt()}function tt(){document.querySelectorAll(".peg").forEach(function(t){const n=i.mode==="manual"&&parseInt(t.dataset.string,10)===i.selectedString;t.classList.toggle("selected",n)})}function W(){document.querySelectorAll(".mode-btn").forEach(function(t){t.classList.toggle("active",t.dataset.mode===i.mode)}),tt()}function et(){const n=["guitar","bass","ukulele"].indexOf(i.instrument);e.tabUnderline.style.transform="translateX("+n*100+"%)"}function Kt(){const t=document.getElementById("ticks");t.innerHTML="";const n=i.theme==="light",a=n?"#7A5D28":"#E8CE95",s=n?"#8A6B35":"#8A7148",o=180,r=190,c=150,m=136;for(let u=-50;u<=50;u+=10){const d=(90-u*1.8)*Math.PI/180,h=o+c*Math.cos(d),V=r-c*Math.sin(d),Tt=o+m*Math.cos(d),it=r-m*Math.sin(d),f=document.createElementNS("http://www.w3.org/2000/svg","line");f.setAttribute("x1",h),f.setAttribute("y1",V),f.setAttribute("x2",Tt),f.setAttribute("y2",it),f.setAttribute("stroke",u===0?a:s),f.setAttribute("stroke-width",u===0?3:1.5),f.setAttribute("stroke-linecap","round"),t.appendChild(f)}}function Ct(){e.micBtn.classList.toggle("active",E),e.micBtnLabel.textContent=E?"Berhenti":"Mulai Tuning"}function nt(t){e.settingsOverlay.classList.toggle("open",t)}function zt(){const t=i.theme==="light",n=t?"#C9B896":"#3B2E22",a=t?"#8A6B35":"#8A7148",s=t?"#7A5D28":"#E8CE95",o=t?"#9C7A3C":"#C6A15B",r=t?"#F7F1E4":"#141110",c=t?"#2F7A3D":"#6FBE7A";document.getElementById("meterTrack").setAttribute("stroke",n),document.getElementById("meterInTuneZone").setAttribute("stroke",c),document.getElementById("flatLabel").setAttribute("fill",a),document.getElementById("sharpLabel").setAttribute("fill",a),document.getElementById("needleLine").setAttribute("stroke",s),document.getElementById("needlePivot").setAttribute("fill",o),document.getElementById("needlePivot").setAttribute("stroke",r),Kt()}function Bt(){document.documentElement.setAttribute("data-theme",i.theme);const t=i.theme==="light";e.themeBtn.textContent=t?"\u{1F319}":"\u2600\uFE0F",e.themeBtn.setAttribute("aria-label",t?"Ganti ke tema gelap":"Ganti ke tema terang"),zt(),J()}function kt(){const t=F.getBoundingClientRect(),n=window.devicePixelRatio||1;F.width=Math.max(1,Math.round(t.width*n)),F.height=Math.max(1,Math.round(t.height*n)),y.setTransform(n,0,0,n,0,0),J()}function J(){const t=F.getBoundingClientRect(),n=t.width,a=t.height;if(n<=0||a<=0)return;const s=i.theme==="light";if(y.clearRect(0,0,n,a),y.strokeStyle=s?"rgba(120,90,40,.18)":"rgba(198,161,91,.14)",y.lineWidth=1,y.beginPath(),y.moveTo(0,a/2),y.lineTo(n,a/2),y.stroke(),!p||!T)return;p.getFloatTimeDomainData(T);const r=T.length/n;y.strokeStyle=s?"#7A5D28":"#C6A15B",y.lineWidth=1.4,y.beginPath();for(let c=0;c<n;c++){const m=Math.floor(c*r),u=T[m]||0,d=a/2-u*(a/2)*.85;c===0?y.moveTo(c,d):y.lineTo(c,d)}y.stroke()}function Ht(){const t=Object.values(x[i.instrument])[0].strings;e.tuningEditorRows.innerHTML="",t.forEach(function(n){const a=document.createElement("div");a.className="cte-row",a.dataset.string=n.string;const s=document.createElement("span");s.className="cte-label",s.textContent="Senar "+n.string;const o=document.createElement("select");o.className="cte-note",rt.forEach(function(u){const d=document.createElement("option");d.value=u,d.textContent=u,u===n.note&&(d.selected=!0),o.appendChild(d)});const r=document.createElement("input");r.type="number",r.className="cte-octave",r.min=0,r.max=7,r.value=n.octave;const c=document.createElement("span");c.className="cte-freq";function m(){const u=parseInt(r.value,10);if(isNaN(u)){c.textContent="\u2013";return}const d=ct(o.value,u);c.textContent=lt(d,i.a4).toFixed(2)+" Hz"}o.addEventListener("change",m),r.addEventListener("input",m),m(),a.appendChild(s),a.appendChild(o),a.appendChild(r),a.appendChild(c),e.tuningEditorRows.appendChild(a)}),e.tuningEditorName.value="",e.tuningEditorWarning.textContent="",e.tuningEditorOverlay.classList.add("open"),e.tuningEditorName.focus()}function X(){e.tuningEditorOverlay.classList.remove("open")}function Ut(){const t=e.tuningEditorName.value.trim();if(!t){e.tuningEditorWarning.textContent="Beri nama untuk tuning ini.";return}const n=e.tuningEditorRows.querySelectorAll(".cte-row"),a=[];n.forEach(function(o){a.push({string:parseInt(o.dataset.string,10),note:o.querySelector(".cte-note").value,octave:parseInt(o.querySelector(".cte-octave").value,10)||0})});const s="custom_"+Date.now();S[i.instrument]||(S[i.instrument]={}),S[i.instrument][s]={label:t,strings:a},dt(),i.tuning=s,i.selectedString=null,C(),_(),q(),R(),E&&M(),X()}function jt(){if(!gt(i.instrument,i.tuning))return;const t=Z(i.instrument)[i.tuning].label;window.confirm('Hapus tuning kustom "'+t+'"?')&&(delete S[i.instrument][i.tuning],dt(),i.tuning=Object.keys(x[i.instrument])[0],i.selectedString=null,C(),_(),q(),R(),E&&M())}document.querySelectorAll(".tab").forEach(function(t){t.dataset.instrument===i.instrument&&t.classList.add("active"),t.addEventListener("click",function(){document.querySelectorAll(".tab").forEach(function(n){n.classList.remove("active"),n.setAttribute("aria-pressed","false")}),t.classList.add("active"),t.setAttribute("aria-pressed","true"),i.instrument=t.dataset.instrument,i.tuning=Object.keys(x[i.instrument])[0],i.selectedString=null,C(),_(),q(),W(),et(),R(),E&&M()})}),e.tuningSelect.addEventListener("change",function(){i.tuning=e.tuningSelect.value,i.selectedString=null,C(),q(),R(),bt(),E&&M()}),document.querySelectorAll(".mode-btn").forEach(function(t){t.addEventListener("click",function(){if(i.mode=t.dataset.mode,i.mode==="manual"&&i.selectedString==null){const n=K();i.selectedString=n[0].string}C(),W()})}),e.micBtn.addEventListener("click",function(){E?Et():pt()}),document.addEventListener("keydown",function(t){if(t.code!=="Space"&&t.key!==" ")return;const n=document.activeElement&&document.activeElement.tagName||"";["INPUT","SELECT","TEXTAREA","BUTTON"].indexOf(n)===-1&&(document.querySelector(".modal-overlay.open")||(t.preventDefault(),E?Et():pt()))}),e.settingsBtn.addEventListener("click",function(){nt(!0)}),e.closeSettings.addEventListener("click",function(){nt(!1)}),e.settingsOverlay.addEventListener("click",function(t){t.target===e.settingsOverlay&&nt(!1)}),e.themeBtn.addEventListener("click",function(){i.theme=i.theme==="light"?"dark":"light",C(),Bt()}),e.addTuningBtn.addEventListener("click",Ht),e.closeTuningEditor.addEventListener("click",X),e.tuningEditorCancel.addEventListener("click",X),e.tuningEditorSave.addEventListener("click",Ut),e.tuningEditorOverlay.addEventListener("click",function(t){t.target===e.tuningEditorOverlay&&X()}),e.deleteTuningBtn.addEventListener("click",jt),e.a4Range.addEventListener("input",function(){i.a4=parseInt(e.a4Range.value,10),e.a4Val.textContent=i.a4+" Hz",C(),q(),E&&M()}),e.sensRange.addEventListener("input",function(){i.sensitivity=parseInt(e.sensRange.value,10),e.sensVal.textContent=i.sensitivity,C()}),e.resetSettings.addEventListener("click",function(){i.a4=N.a4,i.sensitivity=N.sensitivity,e.a4Range.value=i.a4,e.a4Val.textContent=i.a4+" Hz",e.sensRange.value=i.sensitivity,e.sensVal.textContent=i.sensitivity,C(),q(),E&&M()});function _t(){Bt(),_(),q(),W(),et(),e.a4Range.value=i.a4,e.a4Val.textContent=i.a4+" Hz",e.sensRange.value=i.sensitivity,e.sensVal.textContent=i.sensitivity,kt(),navigator.mediaDevices&&navigator.mediaDevices.getUserMedia?window.isSecureContext||b("Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.","warn"):(b("Browser ini tidak mendukung akses mikrofon.","warn"),e.micBtn.disabled=!0),window.addEventListener("resize",function(){et(),kt()})}_t()})();</script></body></html>
+  © 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi undang-undang.
+  Dilarang menyalin, mendistribusikan ulang, atau memodifikasi tanpa izin tertulis pemilik.
+  Dibuat pertama kali: 10 Juli 2026.
+-->
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="Tuner gitar, bass, dan ukulele akurat berbasis browser. Deteksi pitch real-time, 100% diproses di perangkat, tanpa login.">
+<title>Tuner Senar — Gitar · Bass · Ukulele</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#141110">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tuner Senar">
+<style>
+  :root{
+    --bg-deep:#141110;
+    --bg-panel:#1F1A15;
+    --bg-panel-2:#241E17;
+    --wood-border:#3B2E22;
+    --wood-border-soft:#2C2219;
+    --brass:#C6A15B;
+    --brass-bright:#E8CE95;
+    --brass-dim:#8A7148;
+    --cream:#F3E8D6;
+    --muted:#9C9284;
+    --green:#6FBE7A;
+    --amber:#E3A94A;
+    --red:#D9694B;
+    --shadow: rgba(0,0,0,.55);
+    --grad1:#2a2115;
+    --grad2:#1a140d;
+    --texture-line: rgba(255,255,255,.012);
+    --radius-sm:7px;
+    --radius-md:12px;
+    --radius-lg:20px;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  [data-theme="light"]{
+    --bg-deep:#EDE4D3;
+    --bg-panel:#F7F1E4;
+    --bg-panel-2:#EFE6D4;
+    --wood-border:#C9B896;
+    --wood-border-soft:#DCD0B8;
+    --brass:#9C7A3C;
+    --brass-bright:#7A5D28;
+    --brass-dim:#8A6B35;
+    --cream:#2B2318;
+    --muted:#6B6152;
+    --green:#2F7A3D;
+    --amber:#8C5714;
+    --red:#9C3A24;
+    --shadow: rgba(80,60,30,.18);
+    --grad1:#FFF8E8;
+    --grad2:#E8DCC0;
+    --texture-line: rgba(90,70,40,.035);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, var(--grad1) 0%, transparent 60%),
+      radial-gradient(ellipse 1200px 800px at 50% 110%, var(--grad2) 0%, transparent 60%),
+      var(--bg-deep);
+    color:var(--cream);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    justify-content:center;
+    padding:28px 16px 56px;
+    position:relative;
+    overflow-x:hidden;
+    transition:background-color .3s;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:repeating-linear-gradient(115deg, var(--texture-line) 0px, var(--texture-line) 1px, transparent 1px, transparent 5px);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ---------- Topbar ---------- */
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+  .brand{display:flex; align-items:center; gap:11px;}
+  .brand-mark{
+    width:42px; height:42px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass) 60%, var(--brass-dim) 100%);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; color:var(--bg-deep); font-weight:700;
+    box-shadow:0 3px 10px -2px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.4);
+    flex-shrink:0;
+  }
+  .brand-text h1{
+    font-family:var(--mono); font-size:1.05rem; font-weight:700;
+    letter-spacing:.02em; color:var(--brass-bright); margin:0;
+  }
+  .brand-text p{font-size:.68rem; color:var(--muted); margin:2px 0 0; letter-spacing:.02em;}
+
+  .topbar-actions{display:flex; gap:8px; flex-shrink:0;}
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%;
+    background:var(--bg-panel); border:1px solid var(--wood-border);
+    color:var(--brass); font-size:1rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .2s, color .2s, transform .2s;
+    flex-shrink:0;
+  }
+  .icon-btn:hover{border-color:var(--brass); color:var(--brass-bright);}
+  .icon-btn:active{transform:scale(.92);}
+  .icon-btn.small{width:32px; height:32px; font-size:.85rem;}
+  .icon-btn.hidden{display:none !important;}
+
+  /* ---------- Install banner ---------- */
+  .install-banner{
+    display:none; align-items:center; gap:10px;
+    background:var(--bg-panel-2); border:1px solid var(--wood-border);
+    border-radius:var(--radius-md); padding:10px 12px;
+  }
+  .install-banner-text{flex:1; font-size:.72rem; color:var(--muted); line-height:1.4;}
+  .install-banner-actions{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .install-btn{
+    background:linear-gradient(160deg, var(--brass-bright), var(--brass)); border:1px solid var(--brass);
+    color:var(--bg-deep); font-weight:700; font-size:.74rem; padding:7px 12px;
+    border-radius:var(--radius-sm); cursor:pointer; font-family:var(--sans);
+  }
+  .install-dismiss{
+    background:none; border:none; color:var(--muted); cursor:pointer; font-size:.85rem;
+    padding:4px 6px; line-height:1;
+  }
+  .install-dismiss:hover{color:var(--cream);}
+
+  /* ---------- Instrument tabs ---------- */
+  .instrument-tabs{
+    position:relative; display:flex;
+    background:var(--bg-panel); border:1px solid var(--wood-border);
+    border-radius:var(--radius-md); padding:4px;
+  }
+  .tab-underline{
+    position:absolute; top:4px; bottom:4px; left:4px;
+    width:calc((100% - 8px)/3);
+    background:linear-gradient(160deg, var(--brass-bright), var(--brass));
+    border-radius:var(--radius-sm);
+    transition:transform .32s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 3px 10px -3px rgba(0,0,0,.5);
+    z-index:0;
+  }
+  .tab{
+    position:relative; z-index:1; flex:1;
+    padding:10px 0; text-align:center;
+    font-family:var(--mono); font-size:.76rem; font-weight:600;
+    text-transform:uppercase; letter-spacing:.06em;
+    color:var(--muted); background:transparent; border:none;
+    border-radius:var(--radius-sm); cursor:pointer;
+    transition:color .25s;
+  }
+  .tab.active{color:var(--bg-deep);}
+
+  /* ---------- Subtoolbar ---------- */
+  .subtoolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;}
+  .field{display:flex; flex-direction:column; gap:5px; flex:1; min-width:170px;}
+  .field-label{font-size:.62rem; text-transform:uppercase; letter-spacing:.09em; color:var(--muted);}
+  .field-row{display:flex; gap:6px; align-items:center;}
+  select{
+    background:var(--bg-panel); border:1px solid var(--wood-border); color:var(--cream);
+    padding:9px 10px; border-radius:var(--radius-sm); font-family:var(--sans);
+    font-size:.82rem; cursor:pointer; appearance:none; flex:1; min-width:0;
+    background-image:linear-gradient(45deg, transparent 50%, var(--brass) 50%), linear-gradient(135deg, var(--brass) 50%, transparent 50%);
+    background-position:calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+    background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
+  }
+  select:focus-visible{outline:2px solid var(--brass-bright); outline-offset:1px;}
+
+  .mode-toggle{
+    display:flex; background:var(--bg-panel); border:1px solid var(--wood-border);
+    border-radius:var(--radius-sm); overflow:hidden;
+  }
+  .mode-btn{
+    padding:9px 15px; font-size:.74rem; font-family:var(--sans); font-weight:600;
+    background:transparent; border:none; color:var(--muted); cursor:pointer;
+    transition:background .2s, color .2s;
+    border-right:1px solid var(--wood-border);
+  }
+  .mode-btn:last-child{border-right:none;}
+  .mode-btn.active{background:var(--brass); color:var(--bg-deep);}
+
+  /* ---------- Main panel ---------- */
+  .panel{
+    background:var(--bg-panel); border:1px solid var(--wood-border);
+    border-radius:var(--radius-lg); padding:26px 20px 22px;
+    box-shadow:0 24px 48px -22px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03);
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+    transition:box-shadow .4s;
+  }
+  .panel.glow{box-shadow:0 24px 48px -22px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03), 0 0 0 1px var(--green), 0 0 32px -6px var(--green);}
+
+  .meter-wrap{width:100%; display:flex; flex-direction:column; align-items:center;}
+  .meter{width:100%; max-width:340px; display:block; overflow:visible;}
+
+  .readout{text-align:center; margin-top:-14px; transition:opacity .35s;}
+  .readout.idle{opacity:.4;}
+  .note-name{
+    font-family:var(--mono); font-size:clamp(2.3rem, 11vw, 3.1rem); font-weight:700;
+    color:var(--cream); line-height:1; transition:color .25s;
+  }
+  .note-name.state-green{color:var(--green);}
+  .note-name.state-amber{color:var(--amber);}
+  .note-name.state-red{color:var(--red);}
+
+  .freq-row{
+    font-family:var(--mono); font-size:.82rem; color:var(--muted);
+    margin-top:8px; display:flex; gap:7px; justify-content:center; align-items:baseline; flex-wrap:wrap;
+  }
+  #freqVal{color:var(--brass-bright); font-size:1.02rem; font-weight:600;}
+  .target-freq{color:var(--muted);}
+
+  .cents-val{font-family:var(--mono); font-size:.76rem; color:var(--muted); margin-top:5px;}
+  .hint{font-size:.74rem; color:var(--amber); margin-top:6px; min-height:1.1em; font-weight:600;}
+  .hint.ok{color:var(--green);}
+
+  .status-line{font-size:.76rem; color:var(--muted); text-align:center; min-height:1.3em; margin-top:2px; line-height:1.4;}
+  .status-line.warn{color:var(--red);}
+  .status-line.success{color:var(--green); font-weight:700;}
+
+  .signal-meters{display:flex; gap:18px; margin-top:2px; width:100%; max-width:260px;}
+  .meter-bar{flex:1; display:flex; flex-direction:column; gap:4px;}
+  .meter-bar-label{font-size:.58rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted);}
+  .bar{height:5px; background:var(--bg-deep); border-radius:3px; overflow:hidden; border:1px solid var(--wood-border-soft);}
+  .bar i{display:block; height:100%; width:0%; background:var(--brass); border-radius:3px; transition:width .12s linear;}
+  .bar.clarity i{background:var(--green);}
+
+  /* ---------- Waveform ---------- */
+  .wave-wrap{width:100%; max-width:340px; display:flex; flex-direction:column; gap:4px;}
+  .wave-label{font-size:.58rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); text-align:center;}
+  .wave-frame{
+    width:100%; height:52px; background:var(--bg-deep); border:1px solid var(--wood-border-soft);
+    border-radius:var(--radius-sm); overflow:hidden;
+  }
+  #waveCanvas{display:block; width:100%; height:100%;}
+
+  /* ---------- String pegs ---------- */
+  .pegs-row{display:flex; gap:9px; justify-content:center; flex-wrap:wrap; width:100%;}
+  .peg{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:var(--bg-panel-2); border:1.5px solid var(--wood-border);
+    border-radius:16px; padding:9px 7px 7px; min-width:52px; cursor:pointer;
+    transition:border-color .2s, transform .2s, background .2s;
+    color:var(--cream); font-family:var(--mono); user-select:none;
+  }
+  .peg:hover{border-color:var(--brass-dim);}
+  .peg .peg-note{font-size:.92rem; font-weight:700;}
+  .peg .peg-label{font-size:.54rem; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+  .peg .peg-play{
+    margin-top:1px; font-size:.72rem; color:var(--brass); background:none; border:none;
+    cursor:pointer; padding:2px 8px; line-height:1;
+  }
+  .peg .peg-play:hover{color:var(--brass-bright);}
+  .peg.nearest{border-color:var(--brass); box-shadow:0 0 0 1px var(--brass) inset;}
+  .peg.selected{border-color:var(--brass-bright); background:var(--bg-panel); transform:translateY(-2px) rotate(-1.5deg);}
+  .peg.in-tune{border-color:var(--green); box-shadow:0 0 12px -2px var(--green);}
+  .peg:focus-visible{outline:2px solid var(--brass-bright); outline-offset:2px;}
+
+  /* ---------- Mic button ---------- */
+  .mic-btn{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    padding:14px 26px; border-radius:999px; border:1.5px solid var(--brass);
+    background:linear-gradient(160deg, var(--brass-bright), var(--brass));
+    color:var(--bg-deep); font-family:var(--mono); font-weight:700;
+    font-size:.86rem; letter-spacing:.03em; cursor:pointer;
+    transition:background .25s, color .25s, border-color .25s;
+    width:100%; max-width:270px;
+  }
+  .mic-btn:active{transform:scale(.98);}
+  .mic-btn.active{
+    background:transparent; color:var(--green); border-color:var(--green);
+    animation:pulseRing 2.2s ease-in-out infinite;
+  }
+  .mic-icon{width:9px; height:9px; border-radius:50%; background:currentColor; display:inline-block;}
+  .mic-btn.active .mic-icon{animation:blink 1.5s ease-in-out infinite;}
+  @keyframes pulseRing{
+    0%,100%{box-shadow:0 0 0 0 rgba(111,190,122,.35);}
+    50%{box-shadow:0 0 0 9px rgba(111,190,122,0);}
+  }
+  @keyframes blink{0%,100%{opacity:1;} 50%{opacity:.25;}}
+  .mic-btn:disabled{opacity:.45; cursor:not-allowed; animation:none;}
+
+  .mic-hint{font-size:.66rem; color:var(--muted); text-align:center; margin:2px 0 0;}
+  .mic-hint kbd{
+    font-family:var(--mono); background:var(--bg-panel-2); border:1px solid var(--wood-border);
+    border-radius:4px; padding:1px 6px; font-size:.62rem; color:var(--brass-dim);
+  }
+
+  .privacy-note{font-size:.68rem; color:var(--muted); text-align:center; line-height:1.55; padding:0 8px;}
+  .tips-note{font-size:.68rem; color:var(--brass-dim); text-align:center; line-height:1.55; padding:0 8px; margin-top:-6px;}
+  .foot{font-size:.62rem; color:var(--brass-dim); text-align:center; padding-top:2px; letter-spacing:.02em;}
+
+  /* ---------- Modals (settings + tuning editor) ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,8,6,.72); backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    opacity:0; visibility:hidden; transition:opacity .25s; z-index:50;
+  }
+  .modal-overlay.open{opacity:1; visibility:visible;}
+  .modal-card{
+    background:var(--bg-panel); border:1px solid var(--wood-border); border-radius:var(--radius-lg);
+    padding:22px; width:min(92vw,380px); max-height:86vh; overflow-y:auto;
+    display:flex; flex-direction:column; gap:18px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.7);
+    transform:translateY(10px); transition:transform .25s;
+  }
+  .modal-overlay.open .modal-card{transform:translateY(0);}
+  .modal-head{display:flex; align-items:center; justify-content:space-between;}
+  .modal-head h2{font-family:var(--mono); font-size:1rem; color:var(--brass-bright); margin:0;}
+  .set-field{display:flex; flex-direction:column; gap:6px;}
+  .set-field-top{display:flex; justify-content:space-between; font-size:.78rem; color:var(--cream);}
+  .set-field-top span:last-child{color:var(--brass); font-family:var(--mono);}
+  input[type=range]{width:100%; accent-color:var(--brass); cursor:pointer;}
+  input[type=text], input[type=number]{
+    background:var(--bg-panel-2); border:1px solid var(--wood-border); color:var(--cream);
+    padding:9px 10px; border-radius:var(--radius-sm); font-family:var(--sans); font-size:.85rem; width:100%;
+  }
+  .set-desc{font-size:.66rem; color:var(--muted); line-height:1.4;}
+  .reset-btn{
+    background:var(--bg-panel-2); border:1px solid var(--wood-border); color:var(--cream);
+    padding:9px 12px; border-radius:var(--radius-sm); font-size:.78rem; cursor:pointer;
+    font-family:var(--sans); transition:border-color .2s;
+  }
+  .reset-btn:hover{border-color:var(--brass);}
+  .primary-btn{
+    background:linear-gradient(160deg, var(--brass-bright), var(--brass)); border:1px solid var(--brass);
+    color:var(--bg-deep); padding:10px 12px; border-radius:var(--radius-sm); font-size:.82rem;
+    font-weight:700; cursor:pointer; font-family:var(--sans);
+  }
+  .btn-row{display:flex; gap:10px;}
+  .btn-row .reset-btn, .btn-row .primary-btn{flex:1;}
+  .help-box{
+    border-top:1px solid var(--wood-border-soft); padding-top:14px;
+    font-size:.72rem; color:var(--muted); line-height:1.6;
+  }
+  .help-box b{color:var(--brass-bright);}
+
+  /* Custom tuning editor rows */
+  .cte-row{display:flex; align-items:center; gap:8px;}
+  .cte-label{font-size:.72rem; color:var(--muted); width:58px; flex-shrink:0; font-family:var(--mono);}
+  .cte-note{flex:1.2;}
+  .cte-octave{flex:0.7; text-align:center;}
+  .cte-freq{font-size:.66rem; color:var(--brass-dim); font-family:var(--mono); width:64px; text-align:right; flex-shrink:0;}
+  .cte-warning{font-size:.72rem; color:var(--red); min-height:1.1em;}
+
+  *:focus-visible{outline:2px solid var(--brass-bright); outline-offset:2px;}
+
+  @media (max-width:380px){
+    .panel{padding:20px 14px 18px;}
+    .peg{min-width:46px; padding:8px 5px 6px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">♪</div>
+      <div class="brand-text">
+        <h1>Tuner Senar</h1>
+        <p>Gitar · Bass · Ukulele — real-time di browser</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Ganti ke tema terang">☀️</button>
+      <button class="icon-btn" id="settingsBtn" aria-label="Buka pengaturan">⚙</button>
+    </div>
+  </header>
+
+  <div class="install-banner" id="installBanner">
+    <span class="install-banner-text" id="installBannerText">Install Tuner Senar sebagai aplikasi untuk akses lebih cepat &amp; bisa offline</span>
+    <div class="install-banner-actions">
+      <button class="install-btn" id="installBtn">Install</button>
+      <button class="install-dismiss" id="installDismiss" aria-label="Tutup pemberitahuan install">✕</button>
+    </div>
+  </div>
+
+  <nav class="instrument-tabs" aria-label="Pilih instrumen">
+    <span class="tab-underline" id="tabUnderline" aria-hidden="true"></span>
+    <button class="tab" data-instrument="guitar" aria-pressed="true">Gitar</button>
+    <button class="tab" data-instrument="bass" aria-pressed="false">Bass</button>
+    <button class="tab" data-instrument="ukulele" aria-pressed="false">Ukulele</button>
+  </nav>
+
+  <div class="subtoolbar">
+    <label class="field">
+      <span class="field-label">Setelan</span>
+      <div class="field-row">
+        <select id="tuningSelect" aria-label="Pilih setelan tuning"></select>
+        <button class="icon-btn small" id="addTuningBtn" aria-label="Buat tuning kustom">+</button>
+        <button class="icon-btn small hidden" id="deleteTuningBtn" aria-label="Hapus tuning kustom ini">🗑</button>
+      </div>
+    </label>
+    <div class="mode-toggle" role="group" aria-label="Mode deteksi senar">
+      <button class="mode-btn active" data-mode="auto">Otomatis</button>
+      <button class="mode-btn" data-mode="manual">Manual</button>
+    </div>
+  </div>
+
+  <main class="panel" id="tunerPanel">
+    <div class="meter-wrap">
+      <svg class="meter" id="meterSvg" viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meter penyetelan nada">
+        <path id="meterTrack" d="M30,190 A150,150 0 0 1 330,190" stroke="#3B2E22" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path id="meterInTuneZone" d="M156.5,41.9 A150,150 0 0 1 203.5,41.9" stroke="#6FBE7A" stroke-width="13" fill="none" stroke-linecap="round" opacity="0.85"/>
+        <text id="flatLabel" x="16" y="200" font-family="ui-monospace, monospace" font-size="15" fill="#8A7148">♭</text>
+        <text id="sharpLabel" x="336" y="200" font-family="ui-monospace, monospace" font-size="15" fill="#8A7148">♯</text>
+        <g id="ticks"></g>
+        <g id="needleGroup">
+          <line id="needleLine" x1="180" y1="190" x2="180" y2="54" stroke="#E8CE95" stroke-width="3" stroke-linecap="round"/>
+          <circle id="needlePivot" cx="180" cy="190" r="7" fill="#C6A15B" stroke="#141110" stroke-width="2"/>
+        </g>
+      </svg>
+
+      <div class="readout idle" id="readout">
+        <div class="note-name" id="noteName">–</div>
+        <div class="freq-row">
+          <span id="freqVal">0.0</span><span class="unit">Hz</span>
+          <span class="target-freq" id="targetFreq"></span>
+        </div>
+        <div class="cents-val" id="centsVal">– cents</div>
+        <div class="hint" id="hintText"></div>
+      </div>
+
+      <div class="status-line" id="statusLine" role="status" aria-live="polite" aria-atomic="true">Tekan &quot;Mulai Tuning&quot; lalu izinkan akses mikrofon</div>
+
+      <div class="signal-meters">
+        <div class="meter-bar">
+          <span class="meter-bar-label">Level</span>
+          <div class="bar"><i id="levelBar"></i></div>
+        </div>
+        <div class="meter-bar">
+          <span class="meter-bar-label">Kejelasan</span>
+          <div class="bar clarity"><i id="clarityBar"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave-wrap">
+      <div class="wave-frame"><canvas id="waveCanvas"></canvas></div>
+      <span class="wave-label">Bentuk gelombang sinyal</span>
+    </div>
+
+    <div class="pegs-row" id="stringRow"></div>
+
+    <button class="mic-btn" id="micBtn">
+      <span class="mic-icon" aria-hidden="true"></span>
+      <span id="micBtnLabel">Mulai Tuning</span>
+    </button>
+    <p class="mic-hint">Pintasan: tekan <kbd>Spasi</kbd> untuk mulai/berhenti</p>
+  </main>
+
+  <p class="privacy-note">🔒 Semua analisis suara diproses langsung di perangkat Anda — tidak ada audio yang direkam, disimpan, atau dikirim ke server mana pun. Tidak perlu login.</p>
+  <p class="tips-note">Tips: pilih instrumen &amp; setelan di atas, izinkan mikrofon, lalu petik senar satu per satu di ruangan yang tidak terlalu berisik.</p>
+
+  <footer class="foot">Deteksi pitch dengan algoritma autocorrelation (McLeod Pitch Method) — 100% berjalan di perangkat Anda.<br>© 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi.</footer>
+</div>
+
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Pengaturan</h2>
+      <button class="icon-btn" id="closeSettings" aria-label="Tutup pengaturan">✕</button>
+    </div>
+
+    <div class="set-field">
+      <div class="set-field-top"><span>Kalibrasi A4</span><span id="a4Val">440 Hz</span></div>
+      <input type="range" id="a4Range" min="430" max="450" step="1" value="440" aria-label="Kalibrasi A4 dalam Hz">
+      <p class="set-desc">Standar internasional adalah 440 Hz. Ubah hanya jika Anda menyetel bersama alat lain dengan referensi berbeda.</p>
+    </div>
+
+    <div class="set-field">
+      <div class="set-field-top"><span>Sensitivitas Mikrofon</span><span id="sensVal">5</span></div>
+      <input type="range" id="sensRange" min="1" max="10" step="1" value="5" aria-label="Sensitivitas mikrofon">
+      <p class="set-desc">Naikkan jika suara senar terlalu pelan untuk terdeteksi. Turunkan jika suara sekitar ikut terbaca.</p>
+    </div>
+
+    <button class="reset-btn" id="resetSettings">Kembalikan ke Default</button>
+
+    <div class="help-box">
+      <p><b>Cara pakai:</b> pilih instrumen &amp; setelan, tekan Mulai Tuning, lalu petik satu senar. Jarum akan bergerak ke zona hijau saat nada pas. Mode Otomatis mendeteksi senar terdekat secara otomatis; Mode Manual mengunci ke satu senar pilihan Anda. Tanda &quot;+&quot; di sebelah pilihan setelan bisa dipakai untuk membuat tuning kustom sendiri.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="tuningEditorOverlay">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Tuning Kustom</h2>
+      <button class="icon-btn" id="closeTuningEditor" aria-label="Tutup editor tuning">✕</button>
+    </div>
+
+    <div class="set-field">
+      <span class="field-label">Nama Tuning</span>
+      <input type="text" id="tuningEditorName" placeholder="mis. Setelan lagu X">
+    </div>
+
+    <div class="set-field" id="tuningEditorRowsWrap">
+      <span class="field-label">Nada per Senar</span>
+      <div id="tuningEditorRows" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+
+    <div class="cte-warning" id="tuningEditorWarning"></div>
+
+    <div class="btn-row">
+      <button class="reset-btn" id="tuningEditorCancel">Batal</button>
+      <button class="primary-btn" id="tuningEditorSave">Simpan Tuning</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     1. MUSIC THEORY HELPERS
+  ========================================================= */
+  const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+  function noteMidi(name, octave){ return NOTE_NAMES.indexOf(name) + (octave+1)*12; }
+  function midiToFreq(midi, a4){ return a4 * Math.pow(2, (midi-69)/12); }
+  function centsBetween(fA, fB){ return 1200 * Math.log2(fA/fB); }
+
+  /* =========================================================
+     2. BUILT-IN TUNING PRESETS (ordered by physical string
+        number, thickest/lowest-numbered first)
+  ========================================================= */
+  const TUNINGS = {
+    guitar: {
+      standard:      { label:'Standar (E A D G B E)', strings:[
+        {string:6,note:'E',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
+        {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
+      ]},
+      dropD:         { label:'Drop D (D A D G B E)', strings:[
+        {string:6,note:'D',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
+        {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
+      ]},
+      halfStepDown:  { label:'Setengah Laras Turun (Eb Ab Db Gb Bb Eb)', strings:[
+        {string:6,note:'D#',octave:2},{string:5,note:'G#',octave:2},{string:4,note:'C#',octave:3},
+        {string:3,note:'F#',octave:3},{string:2,note:'A#',octave:3},{string:1,note:'D#',octave:4}
+      ]},
+      fullStepDown:  { label:'Satu Laras Turun (D G C F A D)', strings:[
+        {string:6,note:'D',octave:2},{string:5,note:'G',octave:2},{string:4,note:'C',octave:3},
+        {string:3,note:'F',octave:3},{string:2,note:'A',octave:3},{string:1,note:'D',octave:4}
+      ]},
+      openG:         { label:'Open G (D G D G B D)', strings:[
+        {string:6,note:'D',octave:2},{string:5,note:'G',octave:2},{string:4,note:'D',octave:3},
+        {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'D',octave:4}
+      ]},
+      openD:         { label:'Open D (D A D F# A D)', strings:[
+        {string:6,note:'D',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
+        {string:3,note:'F#',octave:3},{string:2,note:'A',octave:3},{string:1,note:'D',octave:4}
+      ]}
+    },
+    bass: {
+      standard:     { label:'Standar (E A D G)', strings:[
+        {string:4,note:'E',octave:1},{string:3,note:'A',octave:1},{string:2,note:'D',octave:2},{string:1,note:'G',octave:2}
+      ]},
+      dropD:        { label:'Drop D (D A D G)', strings:[
+        {string:4,note:'D',octave:1},{string:3,note:'A',octave:1},{string:2,note:'D',octave:2},{string:1,note:'G',octave:2}
+      ]},
+      halfStepDown: { label:'Setengah Laras Turun (Eb Ab Db Gb)', strings:[
+        {string:4,note:'D#',octave:1},{string:3,note:'G#',octave:1},{string:2,note:'C#',octave:2},{string:1,note:'F#',octave:2}
+      ]}
+    },
+    ukulele: {
+      standardHighG: { label:'Standar High-G (G C E A)', strings:[
+        {string:4,note:'G',octave:4},{string:3,note:'C',octave:4},{string:2,note:'E',octave:4},{string:1,note:'A',octave:4}
+      ]},
+      lowG:          { label:'Low-G (G C E A)', strings:[
+        {string:4,note:'G',octave:3},{string:3,note:'C',octave:4},{string:2,note:'E',octave:4},{string:1,note:'A',octave:4}
+      ]},
+      baritone:      { label:'Baritone (D G B E)', strings:[
+        {string:4,note:'D',octave:3},{string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
+      ]}
+    }
+  };
+
+  /* =========================================================
+     3. STATE (persisted locally — no login, no server)
+  ========================================================= */
+  const DEFAULTS = { instrument:'guitar', tuning:'standard', mode:'auto', selectedString:null, a4:440, sensitivity:5, theme:'dark' };
+  let state = loadState();
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem('guitarTunerState_v1');
+      if(!raw) return Object.assign({}, DEFAULTS);
+      const parsed = JSON.parse(raw);
+      return Object.assign({}, DEFAULTS, parsed);
+    }catch(e){ return Object.assign({}, DEFAULTS); }
+  }
+  function saveState(){
+    try{ localStorage.setItem('guitarTunerState_v1', JSON.stringify(state)); }catch(e){}
+  }
+  if(!TUNINGS[state.instrument]) state.instrument = DEFAULTS.instrument;
+
+  function loadCustomTunings(){
+    try{
+      const raw = localStorage.getItem('guitarTunerCustomTunings_v1');
+      const base = {guitar:{},bass:{},ukulele:{}};
+      if(!raw) return base;
+      const parsed = JSON.parse(raw);
+      return Object.assign(base, parsed);
+    }catch(e){ return {guitar:{},bass:{},ukulele:{}}; }
+  }
+  function saveCustomTunings(){
+    try{ localStorage.setItem('guitarTunerCustomTunings_v1', JSON.stringify(customTunings)); }catch(e){}
+  }
+  let customTunings = loadCustomTunings();
+
+  function getAllTunings(instrument){
+    return Object.assign({}, TUNINGS[instrument], customTunings[instrument]);
+  }
+  function isCustomTuning(instrument, key){
+    return !!(customTunings[instrument] && Object.prototype.hasOwnProperty.call(customTunings[instrument], key));
+  }
+  if(!getAllTunings(state.instrument)[state.tuning]){
+    state.tuning = Object.keys(TUNINGS[state.instrument])[0];
+  }
+
+  function getTuningList(){
+    const all = getAllTunings(state.instrument);
+    const preset = all[state.tuning] || Object.values(all)[0];
+    return preset.strings.map(function(s){
+      const midi = noteMidi(s.note, s.octave);
+      const freq = midiToFreq(midi, state.a4);
+      return { string:s.string, note:s.note, octave:s.octave, freq:freq };
+    });
+  }
+  function nearestString(list, freq){
+    let best = list[0], bestDiff = Infinity;
+    for(let i=0;i<list.length;i++){
+      const d = Math.abs(centsBetween(freq, list[i].freq));
+      if(d < bestDiff){ bestDiff = d; best = list[i]; }
+    }
+    return best;
+  }
+  function getFreqBounds(){
+    const list = getTuningList();
+    let minF = Infinity, maxF = -Infinity;
+    for(let i=0;i<list.length;i++){ if(list[i].freq<minF) minF=list[i].freq; if(list[i].freq>maxF) maxF=list[i].freq; }
+    const marginRatio = Math.pow(2, 500/1200); // ~1.335, generous margin either side
+    return { min: minF/marginRatio, max: maxF*marginRatio };
+  }
+
+  /* =========================================================
+     4. PITCH DETECTION ENGINE — McLeod Pitch Method (MPM)
+        Autocorrelation-based, robust against octave errors,
+        with a clarity/confidence score used to reject noise.
+  ========================================================= */
+  function detectPitchMPM(buf, sampleRate, minFreq, maxFreq){
+    const SIZE = buf.length;
+
+    let mean = 0;
+    for(let i=0;i<SIZE;i++) mean += buf[i];
+    mean /= SIZE;
+
+    let rms = 0;
+    for(let i=0;i<SIZE;i++){ const v = buf[i]-mean; rms += v*v; }
+    rms = Math.sqrt(rms/SIZE);
+
+    const minLag = Math.max(1, Math.floor(sampleRate/maxFreq));
+    const maxLag = Math.min(SIZE-2, Math.ceil(sampleRate/minFreq));
+    if(maxLag <= minLag + 2) return { freq:0, clarity:0, rms:rms };
+
+    const nsdf = new Float32Array(maxLag+2);
+    for(let tau=minLag; tau<=maxLag; tau++){
+      let acf=0, div=0;
+      const limit = SIZE - tau;
+      for(let i=0;i<limit;i++){
+        const a = buf[i]-mean, b = buf[i+tau]-mean;
+        acf += a*b;
+        div += a*a + b*b;
+      }
+      nsdf[tau] = div>0 ? (2*acf/div) : 0;
+    }
+
+    const peaks = [];
+    for(let tau=minLag+1; tau<maxLag; tau++){
+      if(nsdf[tau-1] < nsdf[tau] && nsdf[tau] >= nsdf[tau+1] && nsdf[tau] > 0){
+        peaks.push(tau);
+      }
+    }
+    if(peaks.length === 0) return { freq:0, clarity:0, rms:rms };
+
+    let maxVal = -Infinity;
+    for(let i=0;i<peaks.length;i++) if(nsdf[peaks[i]] > maxVal) maxVal = nsdf[peaks[i]];
+
+    const KEY_MAX_RATIO = 0.9;
+    const threshold = maxVal * KEY_MAX_RATIO;
+    let chosen = null;
+    for(let i=0;i<peaks.length;i++){ if(nsdf[peaks[i]] >= threshold){ chosen = peaks[i]; break; } }
+    if(chosen === null) chosen = peaks[0];
+
+    const x0 = chosen>minLag ? chosen-1 : chosen;
+    const x2 = chosen<maxLag ? chosen+1 : chosen;
+    const s0 = nsdf[x0], s1 = nsdf[chosen], s2 = nsdf[x2];
+    let betterTau = chosen;
+    const denom = (s0 - 2*s1 + s2);
+    if(denom !== 0){ betterTau = chosen + (s0 - s2) / (2*denom); }
+    if(betterTau <= 0) betterTau = chosen;
+
+    return { freq: sampleRate/betterTau, clarity: nsdf[chosen], rms: rms };
+  }
+
+  /* =========================================================
+     5. AUDIO ENGINE
+  ========================================================= */
+  let audioCtx=null, mediaStream=null, sourceNode=null, hpFilter=null, lpFilter=null, analyser=null, timeBuf=null;
+  let micActive=false, micStarting=false, micGeneration=0, detectionTimer=null, currentBounds={min:60,max:600};
+  let toneOsc=null, toneGain=null, toneSuppressUntil=0;
+
+  function ensureAudioCtx(){
+    if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+    return audioCtx;
+  }
+
+  // Keep the screen awake while actively tuning, so it doesn't dim/lock mid-session.
+  let wakeLock = null;
+  async function requestWakeLock(){
+    try{
+      if('wakeLock' in navigator){
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', function(){ wakeLock = null; });
+      }
+    }catch(e){ /* not critical if unsupported/denied */ }
+  }
+  function releaseWakeLock(){
+    if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
+  }
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState==='visible' && micActive && !wakeLock){ requestWakeLock(); }
+  });
+
+  function applyInstrumentConfig(){
+    currentBounds = getFreqBounds();
+    const fftSize = state.instrument==='bass' ? 4096 : 2048;
+    if(analyser && analyser.fftSize !== fftSize){
+      analyser.fftSize = fftSize;
+      timeBuf = new Float32Array(analyser.fftSize);
+    }
+    if(hpFilter) hpFilter.frequency.setTargetAtTime(Math.max(20, currentBounds.min*0.6), audioCtx.currentTime, 0.01);
+    if(lpFilter) lpFilter.frequency.setTargetAtTime(Math.min(5000, currentBounds.max*4), audioCtx.currentTime, 0.01);
+  }
+
+  async function startMic(){
+    if(micStarting || micActive) return;
+    micStarting = true;
+    const myGen = ++micGeneration;
+    els.micBtn.disabled = true;
+
+    if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
+      setStatus('Browser ini tidak mendukung akses mikrofon.', 'warn');
+      micStarting = false; els.micBtn.disabled = false;
+      return;
+    }
+    if(!window.isSecureContext){
+      setStatus('Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.', 'warn');
+      micStarting = false; els.micBtn.disabled = false;
+      return;
+    }
+    try{
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio:{
+        echoCancellation:false, noiseSuppression:false, autoGainControl:false, channelCount:1
+      }});
+    }catch(err){
+      let msg = 'Tidak dapat mengakses mikrofon.';
+      if(err && err.name==='NotAllowedError') msg = 'Akses mikrofon ditolak. Izinkan akses mikrofon di pengaturan browser, lalu coba lagi.';
+      else if(err && err.name==='NotFoundError') msg = 'Mikrofon tidak ditemukan. Pastikan perangkat memiliki mikrofon aktif.';
+      setStatus(msg, 'warn');
+      micStarting = false; els.micBtn.disabled = false;
+      return;
+    }
+
+    // If stopMic() (or another startMic()) ran while we were awaiting permission,
+    // this call is stale — release the stream we just acquired and bail out.
+    if(myGen !== micGeneration){
+      mediaStream.getTracks().forEach(function(t){ t.stop(); });
+      mediaStream = null;
+      micStarting = false; els.micBtn.disabled = false;
+      return;
+    }
+
+    ensureAudioCtx();
+    if(audioCtx.state==='suspended') await audioCtx.resume();
+
+    sourceNode = audioCtx.createMediaStreamSource(mediaStream);
+    hpFilter = audioCtx.createBiquadFilter(); hpFilter.type='highpass'; hpFilter.Q.value=0.707;
+    lpFilter = audioCtx.createBiquadFilter(); lpFilter.type='lowpass'; lpFilter.Q.value=0.707;
+    analyser = audioCtx.createAnalyser(); analyser.smoothingTimeConstant=0;
+
+    sourceNode.connect(hpFilter);
+    hpFilter.connect(lpFilter);
+    lpFilter.connect(analyser);
+    // NOTE: analyser is intentionally NOT connected to audioCtx.destination,
+    // so the mic input is never routed to the speakers (no feedback/echo).
+
+    applyInstrumentConfig();
+    if(!timeBuf || timeBuf.length !== analyser.fftSize) timeBuf = new Float32Array(analyser.fftSize);
+
+    micActive = true;
+    micStarting = false;
+    els.micBtn.disabled = false;
+    updateMicUI();
+    setStatus('Mendengarkan... petik salah satu senar', '');
+    smooth.lastValidAt = performance.now();
+    detectionTimer = setInterval(runDetectionTick, 45);
+    requestAnimationFrame(renderLoop);
+    requestWakeLock();
+  }
+
+  function stopMic(){
+    micGeneration++; // invalidate any startMic() currently awaiting getUserMedia
+    micActive = false;
+    micStarting = false;
+    els.micBtn.disabled = false;
+    if(detectionTimer){ clearInterval(detectionTimer); detectionTimer=null; }
+    if(mediaStream){ mediaStream.getTracks().forEach(function(t){ t.stop(); }); mediaStream=null; }
+    if(sourceNode){ try{ sourceNode.disconnect(); }catch(e){} sourceNode=null; }
+    if(hpFilter){ try{ hpFilter.disconnect(); }catch(e){} hpFilter=null; }
+    if(lpFilter){ try{ lpFilter.disconnect(); }catch(e){} lpFilter=null; }
+    if(analyser){ try{ analyser.disconnect(); }catch(e){} analyser=null; }
+    updateMicUI();
+    setStatus('Tekan "Mulai Tuning" untuk mendengarkan', '');
+    resetReadout();
+    drawWaveform();
+    releaseWakeLock();
+  }
+
+  function playReferenceTone(freq){
+    ensureAudioCtx();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    if(toneOsc){ try{ toneOsc.stop(); }catch(e){} }
+    toneOsc = audioCtx.createOscillator();
+    toneGain = audioCtx.createGain();
+    toneOsc.type = 'sine';
+    toneOsc.frequency.value = freq;
+    toneGain.gain.value = 0.0001;
+    toneOsc.connect(toneGain);
+    toneGain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    toneGain.gain.exponentialRampToValueAtTime(0.16, now+0.05);
+    toneGain.gain.setValueAtTime(0.16, now+1.3);
+    toneGain.gain.exponentialRampToValueAtTime(0.0001, now+1.75);
+    toneOsc.start(now);
+    toneOsc.stop(now+1.8);
+    toneSuppressUntil = performance.now() + 1900;
+    setStatus('🔊 Memutar nada referensi — pakai headphone agar mikrofon tidak ikut menangkapnya', '');
+  }
+
+  /* =========================================================
+     6. DETECTION LOOP + STABILITY / SMOOTHING
+  ========================================================= */
+  const CLARITY_ACCEPT = 0.85;
+  let smooth = { emaCents:0, lastCandidateKey:null, candidateCount:0, displayedKey:null, lastValidAt:0, inTuneSince:0, vibrated:false };
+  let liveTargetCents = 0;
+
+  function getSilenceThreshold(){
+    const t = 1 - (state.sensitivity-1)/9; // sensitivity 1..10 -> t 1..0
+    return 0.002 + t*0.018;
+  }
+
+  function runDetectionTick(){
+    if(!analyser) return;
+    if(performance.now() < toneSuppressUntil) return;
+
+    analyser.getFloatTimeDomainData(timeBuf);
+    const result = detectPitchMPM(timeBuf, audioCtx.sampleRate, currentBounds.min, currentBounds.max);
+    const now = performance.now();
+    const silenceThresh = getSilenceThreshold();
+
+    updateLevelClarity(result.rms, result.clarity);
+
+    if(result.rms < silenceThresh || result.freq<=0 || result.clarity < CLARITY_ACCEPT){
+      if(now - smooth.lastValidAt > 1300){ showSilentState(); }
+      return;
+    }
+
+    smooth.lastValidAt = now;
+    let freq = result.freq;
+
+    const list = getTuningList();
+    let target;
+    if(state.mode==='manual' && state.selectedString!=null){
+      target = list.find(function(s){ return s.string===state.selectedString; }) || nearestString(list, freq);
+    } else {
+      target = nearestString(list, freq);
+    }
+
+    // Octave-error compensation: snap to fundamental if a harmonic/sub-harmonic was picked up
+    const ratio = freq / target.freq;
+    if(ratio > 1.85 && ratio < 2.15) freq = freq/2;
+    else if(ratio > 0.43 && ratio < 0.57) freq = freq*2;
+
+    const cents = centsBetween(freq, target.freq);
+    const key = target.string+':'+target.note+target.octave;
+
+    if(key === smooth.lastCandidateKey){ smooth.candidateCount++; }
+    else { smooth.lastCandidateKey = key; smooth.candidateCount = 1; }
+    if(smooth.candidateCount >= 2 || smooth.displayedKey===null){ smooth.displayedKey = key; }
+
+    if(key === smooth.displayedKey){
+      const alpha = 0.35;
+      smooth.emaCents = smooth.emaCents + alpha*(cents - smooth.emaCents);
+    } else {
+      smooth.emaCents = cents;
+    }
+
+    const displayedTarget = list.find(function(s){ return (s.string+':'+s.note+s.octave)===smooth.displayedKey; }) || target;
+    updateReadout({ target:displayedTarget, freq:freq, cents:smooth.emaCents, clarity:result.clarity });
+  }
+
+  /* =========================================================
+     7. RENDER LOOP (smooth needle motion + live waveform)
+  ========================================================= */
+  let displayCents = 0;
+  function renderLoop(){
+    if(!micActive) return;
+    displayCents += (liveTargetCents - displayCents) * 0.25;
+    const clamped = Math.max(-60, Math.min(60, displayCents));
+    if(needleGroup) needleGroup.setAttribute('transform', 'rotate(' + (clamped*1.8).toFixed(2) + ' 180 190)');
+    drawWaveform();
+    requestAnimationFrame(renderLoop);
+  }
+
+  /* =========================================================
+     8. UI — DOM refs
+  ========================================================= */
+  const els = {
+    tabUnderline: document.getElementById('tabUnderline'),
+    tuningSelect: document.getElementById('tuningSelect'),
+    addTuningBtn: document.getElementById('addTuningBtn'),
+    deleteTuningBtn: document.getElementById('deleteTuningBtn'),
+    stringRow: document.getElementById('stringRow'),
+    micBtn: document.getElementById('micBtn'),
+    micBtnLabel: document.getElementById('micBtnLabel'),
+    noteName: document.getElementById('noteName'),
+    freqVal: document.getElementById('freqVal'),
+    targetFreq: document.getElementById('targetFreq'),
+    centsVal: document.getElementById('centsVal'),
+    hintText: document.getElementById('hintText'),
+    statusLine: document.getElementById('statusLine'),
+    levelBar: document.getElementById('levelBar'),
+    clarityBar: document.getElementById('clarityBar'),
+    readout: document.getElementById('readout'),
+    panel: document.getElementById('tunerPanel'),
+    themeBtn: document.getElementById('themeBtn'),
+    settingsBtn: document.getElementById('settingsBtn'),
+    closeSettings: document.getElementById('closeSettings'),
+    settingsOverlay: document.getElementById('settingsOverlay'),
+    a4Range: document.getElementById('a4Range'),
+    a4Val: document.getElementById('a4Val'),
+    sensRange: document.getElementById('sensRange'),
+    sensVal: document.getElementById('sensVal'),
+    resetSettings: document.getElementById('resetSettings'),
+    tuningEditorOverlay: document.getElementById('tuningEditorOverlay'),
+    tuningEditorRows: document.getElementById('tuningEditorRows'),
+    tuningEditorName: document.getElementById('tuningEditorName'),
+    tuningEditorWarning: document.getElementById('tuningEditorWarning'),
+    tuningEditorSave: document.getElementById('tuningEditorSave'),
+    tuningEditorCancel: document.getElementById('tuningEditorCancel'),
+    closeTuningEditor: document.getElementById('closeTuningEditor'),
+    installBanner: document.getElementById('installBanner'),
+    installBannerText: document.getElementById('installBannerText'),
+    installBtn: document.getElementById('installBtn'),
+    installDismiss: document.getElementById('installDismiss')
+  };
+  const needleGroup = document.getElementById('needleGroup');
+  const waveCanvas = document.getElementById('waveCanvas');
+  const waveCtx = waveCanvas.getContext('2d');
+
+  function setStatus(text, kind){
+    els.statusLine.textContent = text;
+    els.statusLine.className = 'status-line' + (kind ? ' '+kind : '');
+  }
+
+  function centsColorClass(cents){
+    const a = Math.abs(cents);
+    if(a<=5) return 'state-green';
+    if(a<=20) return 'state-amber';
+    return 'state-red';
+  }
+
+  function updateLevelClarity(rms, clarity){
+    const levelPct = Math.max(0, Math.min(100, (rms/0.12)*100));
+    const clarityPct = Math.max(0, Math.min(100, clarity*100));
+    els.levelBar.style.width = levelPct+'%';
+    els.clarityBar.style.width = clarityPct+'%';
+  }
+
+  function showSilentState(){
+    els.readout.classList.add('idle');
+    els.panel.classList.remove('glow');
+    document.querySelectorAll('.peg').forEach(function(p){ p.classList.remove('nearest','in-tune'); });
+    smooth.inTuneSince = 0;
+    liveTargetCents = 0;
+    if(!els.statusLine.classList.contains('warn')){
+      setStatus('Menunggu... petik salah satu senar', '');
+    }
+  }
+
+  function resetReadout(){
+    els.noteName.textContent = '–';
+    els.noteName.className = 'note-name';
+    els.freqVal.textContent = '0.0';
+    els.targetFreq.textContent = '';
+    els.centsVal.textContent = '– cents';
+    els.hintText.textContent = '';
+    els.hintText.className = 'hint';
+    els.levelBar.style.width = '0%';
+    els.clarityBar.style.width = '0%';
+    els.readout.classList.add('idle');
+    els.panel.classList.remove('glow');
+    liveTargetCents = 0; displayCents = 0;
+    if(needleGroup) needleGroup.setAttribute('transform','rotate(0 180 190)');
+    document.querySelectorAll('.peg').forEach(function(p){ p.classList.remove('nearest','selected','in-tune'); });
+    smooth = { emaCents:0, lastCandidateKey:null, candidateCount:0, displayedKey:null, lastValidAt:0, inTuneSince:0, vibrated:false };
+  }
+
+  function updateReadout(data){
+    els.readout.classList.remove('idle');
+    const rounded = Math.round(data.cents);
+    const cls = centsColorClass(data.cents);
+
+    els.noteName.textContent = data.target.note + data.target.octave;
+    els.noteName.className = 'note-name ' + cls;
+    els.freqVal.textContent = data.freq.toFixed(1);
+    els.targetFreq.textContent = '(target ' + data.target.freq.toFixed(2) + ' Hz)';
+    els.centsVal.textContent = (rounded>=0?'+':'') + rounded + ' cents';
+
+    liveTargetCents = data.cents;
+
+    const now = performance.now();
+    if(Math.abs(data.cents) <= 5){
+      if(!smooth.inTuneSince) smooth.inTuneSince = now;
+      const held = now - smooth.inTuneSince;
+      if(held > 220){
+        els.hintText.textContent = '🎯 Selaras!';
+        els.hintText.className = 'hint ok';
+        setStatus('🎯 Senar ' + data.target.string + ' selaras', 'success');
+        els.panel.classList.add('glow');
+        if(!smooth.vibrated){
+          if(navigator.vibrate) navigator.vibrate(60);
+          smooth.vibrated = true;
+        }
+      } else {
+        els.hintText.textContent = '';
+        els.panel.classList.remove('glow');
+      }
+    } else {
+      smooth.inTuneSince = 0;
+      smooth.vibrated = false;
+      els.panel.classList.remove('glow');
+      if(data.cents > 5){
+        els.hintText.textContent = '▼ Kendurkan sedikit (terlalu tinggi)';
+      } else {
+        els.hintText.textContent = '▲ Kencangkan sedikit (terlalu rendah)';
+      }
+      els.hintText.className = 'hint';
+      setStatus('Mendengarkan senar ' + data.target.string + ' (' + data.target.note + data.target.octave + ')', '');
+    }
+
+    document.querySelectorAll('.peg').forEach(function(p){
+      const isTarget = parseInt(p.dataset.string,10) === data.target.string;
+      p.classList.toggle('nearest', isTarget);
+      p.classList.toggle('in-tune', isTarget && Math.abs(data.cents)<=5);
+    });
+  }
+
+  /* =========================================================
+     9. UI BUILDERS
+  ========================================================= */
+  function renderTuningOptions(){
+    const sel = els.tuningSelect;
+    sel.innerHTML = '';
+    const builtIn = TUNINGS[state.instrument];
+    const custom = customTunings[state.instrument] || {};
+
+    const gBuilt = document.createElement('optgroup');
+    gBuilt.label = 'Bawaan';
+    Object.keys(builtIn).forEach(function(key){
+      const opt = document.createElement('option');
+      opt.value = key; opt.textContent = builtIn[key].label;
+      if(key===state.tuning) opt.selected = true;
+      gBuilt.appendChild(opt);
+    });
+    sel.appendChild(gBuilt);
+
+    const customKeys = Object.keys(custom);
+    if(customKeys.length){
+      const gCustom = document.createElement('optgroup');
+      gCustom.label = 'Kustom';
+      customKeys.forEach(function(key){
+        const opt = document.createElement('option');
+        opt.value = key; opt.textContent = custom[key].label;
+        if(key===state.tuning) opt.selected = true;
+        gCustom.appendChild(opt);
+      });
+      sel.appendChild(gCustom);
+    }
+    updateDeleteTuningBtnVisibility();
+  }
+
+  function updateDeleteTuningBtnVisibility(){
+    const isCustom = isCustomTuning(state.instrument, state.tuning);
+    els.deleteTuningBtn.classList.toggle('hidden', !isCustom);
+  }
+
+  function renderStringPegs(){
+    const row = els.stringRow;
+    row.innerHTML = '';
+    const list = getTuningList();
+    list.forEach(function(s){
+      const peg = document.createElement('div');
+      peg.className = 'peg';
+      peg.dataset.string = s.string;
+      peg.setAttribute('role','button');
+      peg.setAttribute('tabindex','0');
+      peg.setAttribute('aria-label', 'Pilih senar ' + s.string + ', nada ' + s.note + s.octave);
+
+      const playBtn = document.createElement('button');
+      playBtn.className = 'peg-play';
+      playBtn.type = 'button';
+      playBtn.textContent = '🔊';
+      playBtn.setAttribute('aria-label', 'Dengarkan nada referensi ' + s.note + s.octave);
+      playBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        playReferenceTone(s.freq);
+      });
+
+      const noteEl = document.createElement('div');
+      noteEl.className = 'peg-note';
+      noteEl.textContent = s.note + s.octave;
+
+      const labelEl = document.createElement('div');
+      labelEl.className = 'peg-label';
+      labelEl.textContent = 'Senar ' + s.string;
+
+      peg.appendChild(playBtn);
+      peg.appendChild(noteEl);
+      peg.appendChild(labelEl);
+
+      function selectPeg(){
+        state.mode = 'manual';
+        state.selectedString = s.string;
+        saveState();
+        updateModeUI();
+        highlightSelectedPeg();
+      }
+      peg.addEventListener('click', selectPeg);
+      peg.addEventListener('keydown', function(e){
+        if(e.key==='Enter' || e.key===' '){ e.preventDefault(); selectPeg(); }
+      });
+
+      row.appendChild(peg);
+    });
+    highlightSelectedPeg();
+  }
+
+  function highlightSelectedPeg(){
+    document.querySelectorAll('.peg').forEach(function(p){
+      const isSel = state.mode==='manual' && parseInt(p.dataset.string,10)===state.selectedString;
+      p.classList.toggle('selected', isSel);
+    });
+  }
+
+  function updateModeUI(){
+    document.querySelectorAll('.mode-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.mode===state.mode);
+    });
+    highlightSelectedPeg();
+  }
+
+  function updateTabUnderlinePosition(){
+    const order = ['guitar','bass','ukulele'];
+    const idx = order.indexOf(state.instrument);
+    els.tabUnderline.style.transform = 'translateX(' + (idx*100) + '%)';
+  }
+
+  function buildTicks(){
+    const g = document.getElementById('ticks');
+    g.innerHTML = '';
+    const light = state.theme === 'light';
+    const bright = light ? '#7A5D28' : '#E8CE95';
+    const dim = light ? '#8A6B35' : '#8A7148';
+    const cx=180, cy=190, R1=150, R2=136;
+    for(let c=-50; c<=50; c+=10){
+      const angle = (90 - c*1.8) * Math.PI/180;
+      const x1 = cx + R1*Math.cos(angle), y1 = cy - R1*Math.sin(angle);
+      const x2 = cx + R2*Math.cos(angle), y2 = cy - R2*Math.sin(angle);
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+      line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+      line.setAttribute('stroke', c===0 ? bright : dim);
+      line.setAttribute('stroke-width', c===0 ? 3 : 1.5);
+      line.setAttribute('stroke-linecap','round');
+      g.appendChild(line);
+    }
+  }
+
+  function updateMicUI(){
+    els.micBtn.classList.toggle('active', micActive);
+    els.micBtnLabel.textContent = micActive ? 'Berhenti' : 'Mulai Tuning';
+  }
+
+  function toggleSettings(open){
+    els.settingsOverlay.classList.toggle('open', open);
+  }
+
+  /* =========================================================
+     10. THEME
+  ========================================================= */
+  function applyThemeSvgColors(){
+    const light = state.theme === 'light';
+    const track  = light ? '#C9B896' : '#3B2E22';
+    const dim    = light ? '#8A6B35' : '#8A7148';
+    const bright = light ? '#7A5D28' : '#E8CE95';
+    const brass  = light ? '#9C7A3C' : '#C6A15B';
+    const bg     = light ? '#F7F1E4' : '#141110';
+    const green  = light ? '#2F7A3D' : '#6FBE7A';
+    document.getElementById('meterTrack').setAttribute('stroke', track);
+    document.getElementById('meterInTuneZone').setAttribute('stroke', green);
+    document.getElementById('flatLabel').setAttribute('fill', dim);
+    document.getElementById('sharpLabel').setAttribute('fill', dim);
+    document.getElementById('needleLine').setAttribute('stroke', bright);
+    document.getElementById('needlePivot').setAttribute('fill', brass);
+    document.getElementById('needlePivot').setAttribute('stroke', bg);
+    buildTicks();
+  }
+
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', state.theme);
+    const light = state.theme === 'light';
+    els.themeBtn.textContent = light ? '🌙' : '☀️';
+    els.themeBtn.setAttribute('aria-label', light ? 'Ganti ke tema gelap' : 'Ganti ke tema terang');
+    applyThemeSvgColors();
+    drawWaveform();
+  }
+
+  /* =========================================================
+     11. LIVE WAVEFORM
+  ========================================================= */
+  function resizeWaveCanvas(){
+    const rect = waveCanvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    waveCanvas.width = Math.max(1, Math.round(rect.width*dpr));
+    waveCanvas.height = Math.max(1, Math.round(rect.height*dpr));
+    waveCtx.setTransform(dpr,0,0,dpr,0,0);
+    drawWaveform();
+  }
+
+  function drawWaveform(){
+    const rect = waveCanvas.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    if(w<=0 || h<=0) return;
+    const light = state.theme === 'light';
+    waveCtx.clearRect(0,0,w,h);
+
+    waveCtx.strokeStyle = light ? 'rgba(120,90,40,.18)' : 'rgba(198,161,91,.14)';
+    waveCtx.lineWidth = 1;
+    waveCtx.beginPath();
+    waveCtx.moveTo(0,h/2); waveCtx.lineTo(w,h/2);
+    waveCtx.stroke();
+
+    if(!analyser || !timeBuf){ return; }
+    analyser.getFloatTimeDomainData(timeBuf);
+    const n = timeBuf.length;
+    const step = n / w;
+    waveCtx.strokeStyle = light ? '#7A5D28' : '#C6A15B';
+    waveCtx.lineWidth = 1.4;
+    waveCtx.beginPath();
+    for(let x=0; x<w; x++){
+      const idx = Math.floor(x*step);
+      const v = timeBuf[idx] || 0;
+      const y = h/2 - v*(h/2)*0.85;
+      if(x===0) waveCtx.moveTo(x,y); else waveCtx.lineTo(x,y);
+    }
+    waveCtx.stroke();
+  }
+
+  /* =========================================================
+     12. CUSTOM TUNING EDITOR
+  ========================================================= */
+  function openTuningEditor(){
+    const template = Object.values(TUNINGS[state.instrument])[0].strings;
+    els.tuningEditorRows.innerHTML = '';
+    template.forEach(function(s){
+      const row = document.createElement('div');
+      row.className = 'cte-row';
+      row.dataset.string = s.string;
+
+      const label = document.createElement('span');
+      label.className = 'cte-label';
+      label.textContent = 'Senar ' + s.string;
+
+      const noteSel = document.createElement('select');
+      noteSel.className = 'cte-note';
+      NOTE_NAMES.forEach(function(n){
+        const o = document.createElement('option');
+        o.value = n; o.textContent = n;
+        if(n===s.note) o.selected = true;
+        noteSel.appendChild(o);
+      });
+
+      const octInput = document.createElement('input');
+      octInput.type = 'number'; octInput.className = 'cte-octave';
+      octInput.min = 0; octInput.max = 7; octInput.value = s.octave;
+
+      const freqSpan = document.createElement('span');
+      freqSpan.className = 'cte-freq';
+
+      function updateFreq(){
+        const oct = parseInt(octInput.value,10);
+        if(isNaN(oct)) { freqSpan.textContent = '–'; return; }
+        const midi = noteMidi(noteSel.value, oct);
+        freqSpan.textContent = midiToFreq(midi, state.a4).toFixed(2)+' Hz';
+      }
+      noteSel.addEventListener('change', updateFreq);
+      octInput.addEventListener('input', updateFreq);
+      updateFreq();
+
+      row.appendChild(label);
+      row.appendChild(noteSel);
+      row.appendChild(octInput);
+      row.appendChild(freqSpan);
+      els.tuningEditorRows.appendChild(row);
+    });
+    els.tuningEditorName.value = '';
+    els.tuningEditorWarning.textContent = '';
+    els.tuningEditorOverlay.classList.add('open');
+    els.tuningEditorName.focus();
+  }
+
+  function closeTuningEditorFn(){
+    els.tuningEditorOverlay.classList.remove('open');
+  }
+
+  function saveTuningEditor(){
+    const name = els.tuningEditorName.value.trim();
+    if(!name){
+      els.tuningEditorWarning.textContent = 'Beri nama untuk tuning ini.';
+      return;
+    }
+    const rows = els.tuningEditorRows.querySelectorAll('.cte-row');
+    const strings = [];
+    rows.forEach(function(row){
+      strings.push({
+        string: parseInt(row.dataset.string,10),
+        note: row.querySelector('.cte-note').value,
+        octave: parseInt(row.querySelector('.cte-octave').value,10) || 0
+      });
+    });
+    const id = 'custom_' + Date.now();
+    if(!customTunings[state.instrument]) customTunings[state.instrument] = {};
+    customTunings[state.instrument][id] = { label: name, strings: strings };
+    saveCustomTunings();
+
+    state.tuning = id;
+    state.selectedString = null;
+    saveState();
+    renderTuningOptions();
+    renderStringPegs();
+    resetReadout();
+    if(micActive) applyInstrumentConfig();
+    closeTuningEditorFn();
+  }
+
+  function deleteCurrentTuning(){
+    if(!isCustomTuning(state.instrument, state.tuning)) return;
+    const label = getAllTunings(state.instrument)[state.tuning].label;
+    if(!window.confirm('Hapus tuning kustom "' + label + '"?')) return;
+    delete customTunings[state.instrument][state.tuning];
+    saveCustomTunings();
+    state.tuning = Object.keys(TUNINGS[state.instrument])[0];
+    state.selectedString = null;
+    saveState();
+    renderTuningOptions();
+    renderStringPegs();
+    resetReadout();
+    if(micActive) applyInstrumentConfig();
+  }
+
+  /* =========================================================
+     13. EVENT WIRING
+  ========================================================= */
+  document.querySelectorAll('.tab').forEach(function(tab){
+    if(tab.dataset.instrument===state.instrument) tab.classList.add('active');
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-pressed','false'); });
+      tab.classList.add('active'); tab.setAttribute('aria-pressed','true');
+      state.instrument = tab.dataset.instrument;
+      state.tuning = Object.keys(TUNINGS[state.instrument])[0];
+      state.selectedString = null;
+      saveState();
+      renderTuningOptions();
+      renderStringPegs();
+      updateModeUI();
+      updateTabUnderlinePosition();
+      resetReadout();
+      if(micActive) applyInstrumentConfig();
+    });
+  });
+
+  els.tuningSelect.addEventListener('change', function(){
+    state.tuning = els.tuningSelect.value;
+    state.selectedString = null;
+    saveState();
+    renderStringPegs();
+    resetReadout();
+    updateDeleteTuningBtnVisibility();
+    if(micActive) applyInstrumentConfig();
+  });
+
+  document.querySelectorAll('.mode-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.mode = btn.dataset.mode;
+      if(state.mode==='manual' && state.selectedString==null){
+        const list = getTuningList();
+        state.selectedString = list[0].string;
+      }
+      saveState();
+      updateModeUI();
+    });
+  });
+
+  els.micBtn.addEventListener('click', function(){
+    if(micActive) stopMic(); else startMic();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.code !== 'Space' && e.key !== ' ') return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if(['INPUT','SELECT','TEXTAREA','BUTTON'].indexOf(tag) !== -1) return;
+    if(document.querySelector('.modal-overlay.open')) return;
+    e.preventDefault();
+    if(micActive) stopMic(); else startMic();
+  });
+
+  els.settingsBtn.addEventListener('click', function(){ toggleSettings(true); });
+  els.closeSettings.addEventListener('click', function(){ toggleSettings(false); });
+  els.settingsOverlay.addEventListener('click', function(e){
+    if(e.target === els.settingsOverlay) toggleSettings(false);
+  });
+
+  els.themeBtn.addEventListener('click', function(){
+    state.theme = state.theme==='light' ? 'dark' : 'light';
+    saveState();
+    applyTheme();
+  });
+
+  els.addTuningBtn.addEventListener('click', openTuningEditor);
+  els.closeTuningEditor.addEventListener('click', closeTuningEditorFn);
+  els.tuningEditorCancel.addEventListener('click', closeTuningEditorFn);
+  els.tuningEditorSave.addEventListener('click', saveTuningEditor);
+  els.tuningEditorOverlay.addEventListener('click', function(e){
+    if(e.target === els.tuningEditorOverlay) closeTuningEditorFn();
+  });
+  els.deleteTuningBtn.addEventListener('click', deleteCurrentTuning);
+
+  els.a4Range.addEventListener('input', function(){
+    state.a4 = parseInt(els.a4Range.value,10);
+    els.a4Val.textContent = state.a4 + ' Hz';
+    saveState();
+    renderStringPegs();
+    if(micActive) applyInstrumentConfig();
+  });
+  els.sensRange.addEventListener('input', function(){
+    state.sensitivity = parseInt(els.sensRange.value,10);
+    els.sensVal.textContent = state.sensitivity;
+    saveState();
+  });
+  els.resetSettings.addEventListener('click', function(){
+    state.a4 = DEFAULTS.a4; state.sensitivity = DEFAULTS.sensitivity;
+    els.a4Range.value = state.a4; els.a4Val.textContent = state.a4+' Hz';
+    els.sensRange.value = state.sensitivity; els.sensVal.textContent = state.sensitivity;
+    saveState();
+    renderStringPegs();
+    if(micActive) applyInstrumentConfig();
+  });
+
+  /* =========================================================
+     14. PWA — INSTALL PROMPT + SERVICE WORKER
+  ========================================================= */
+  const INSTALL_DISMISSED_KEY = 'guitarTunerInstallDismissed_v1';
+  let deferredInstallPrompt = null;
+
+  function isStandaloneDisplay(){
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  }
+
+  function maybeShowInstallBanner(){
+    if(isStandaloneDisplay()) return;
+    try{ if(localStorage.getItem(INSTALL_DISMISSED_KEY)==='1') return; }catch(e){}
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    if(deferredInstallPrompt){
+      els.installBannerText.textContent = 'Install Tuner Senar sebagai aplikasi untuk akses lebih cepat & bisa offline';
+      els.installBtn.style.display = '';
+      els.installBanner.style.display = 'flex';
+    } else if(isIOS){
+      els.installBannerText.textContent = 'Di iPhone: ketuk tombol Share lalu "Add to Home Screen" untuk install';
+      els.installBtn.style.display = 'none';
+      els.installBanner.style.display = 'flex';
+    }
+  }
+
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    maybeShowInstallBanner();
+  });
+
+  els.installBtn.addEventListener('click', async function(){
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    try{ await deferredInstallPrompt.userChoice; }catch(e){}
+    deferredInstallPrompt = null;
+    els.installBanner.style.display = 'none';
+  });
+
+  els.installDismiss.addEventListener('click', function(){
+    els.installBanner.style.display = 'none';
+    try{ localStorage.setItem(INSTALL_DISMISSED_KEY, '1'); }catch(e){}
+  });
+
+  window.addEventListener('appinstalled', function(){
+    els.installBanner.style.display = 'none';
+    deferredInstallPrompt = null;
+  });
+
+  function registerServiceWorker(){
+    if('serviceWorker' in navigator && window.isSecureContext){
+      window.addEventListener('load', function(){
+        navigator.serviceWorker.register('./sw.js').catch(function(){ /* e.g. sw.js not hosted alongside (file:// preview) — ignore */ });
+      });
+    }
+  }
+
+  /* =========================================================
+     15. INIT
+  ========================================================= */
+  function init(){
+    applyTheme();
+    renderTuningOptions();
+    renderStringPegs();
+    updateModeUI();
+    updateTabUnderlinePosition();
+    els.a4Range.value = state.a4; els.a4Val.textContent = state.a4+' Hz';
+    els.sensRange.value = state.sensitivity; els.sensVal.textContent = state.sensitivity;
+    resizeWaveCanvas();
+    registerServiceWorker();
+    maybeShowInstallBanner();
+
+    if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
+      setStatus('Browser ini tidak mendukung akses mikrofon.', 'warn');
+      els.micBtn.disabled = true;
+    } else if(!window.isSecureContext){
+      setStatus('Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.', 'warn');
+    }
+
+    window.addEventListener('resize', function(){
+      updateTabUnderlinePosition();
+      resizeWaveCanvas();
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

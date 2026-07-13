@@ -1,0 +1,20 @@
+{
+  "name": "Tuner Senar — Gitar, Bass, Ukulele",
+  "short_name": "Tuner Senar",
+  "description": "Tuner gitar, bass, dan ukulele akurat, real-time, 100% diproses di perangkat.",
+  "id": "/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#141110",
+  "theme_color": "#141110",
+  "lang": "id",
+  "dir": "ltr",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
