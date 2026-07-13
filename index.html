@@ -368,6 +368,20 @@
   .cte-note{flex:1.2;}
   .cte-octave{flex:0.7; text-align:center;}
   .cte-freq{font-size:.66rem; color:var(--brass-dim); font-family:var(--mono); width:64px; text-align:right; flex-shrink:0;}
+  .cte-remove{
+    background:none; border:1px solid var(--wood-border); color:var(--red);
+    width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:.7rem;
+    flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  }
+  .cte-remove:hover:not(:disabled){border-color:var(--red);}
+  .cte-remove:disabled{opacity:.3; cursor:not-allowed;}
+  .add-string-btn{
+    align-self:flex-start; background:none; border:1px dashed var(--wood-border); color:var(--brass);
+    font-size:.72rem; padding:7px 12px; border-radius:var(--radius-sm); cursor:pointer; font-family:var(--sans);
+    margin-top:2px;
+  }
+  .add-string-btn:hover:not(:disabled){border-color:var(--brass);}
+  .add-string-btn:disabled{opacity:.35; cursor:not-allowed;}
   .cte-warning{font-size:.72rem; color:var(--red); min-height:1.1em;}
 
   *:focus-visible{outline:2px solid var(--brass-bright); outline-offset:2px;}
@@ -420,6 +434,7 @@
       <div class="field-row">
         <select id="tuningSelect" aria-label="Pilih setelan tuning"></select>
         <button class="icon-btn small" id="addTuningBtn" aria-label="Buat tuning kustom">+</button>
+        <button class="icon-btn small hidden" id="exportTuningBtn" aria-label="Bagikan tuning kustom ini sebagai kode">⇪</button>
         <button class="icon-btn small hidden" id="deleteTuningBtn" aria-label="Hapus tuning kustom ini">🗑</button>
       </div>
     </label>
@@ -522,6 +537,15 @@
     </div>
 
     <div class="set-field">
+      <span class="field-label">Punya Kode Tuning? (opsional)</span>
+      <div class="field-row">
+        <input type="text" id="tuningEditorImportCode" placeholder="Tempel kode TS1-... di sini">
+        <button class="reset-btn" id="tuningEditorImportBtn">Import</button>
+      </div>
+      <p class="set-desc">Atau isi manual di bawah:</p>
+    </div>
+
+    <div class="set-field">
       <span class="field-label">Nama Tuning</span>
       <input type="text" id="tuningEditorName" placeholder="mis. Setelan lagu X">
     </div>
@@ -529,6 +553,7 @@
     <div class="set-field" id="tuningEditorRowsWrap">
       <span class="field-label">Nada per Senar</span>
       <div id="tuningEditorRows" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <button class="add-string-btn" id="addStringRowBtn" type="button">+ Tambah Senar</button>
     </div>
 
     <div class="cte-warning" id="tuningEditorWarning"></div>
@@ -582,6 +607,10 @@
       openD:         { label:'Open D (D A D F# A D)', strings:[
         {string:6,note:'D',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
         {string:3,note:'F#',octave:3},{string:2,note:'A',octave:3},{string:1,note:'D',octave:4}
+      ]},
+      standard7:     { label:'Standar 7-Senar (B E A D G B E)', strings:[
+        {string:7,note:'B',octave:1},{string:6,note:'E',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
+        {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
       ]}
     },
     bass: {
@@ -593,6 +622,9 @@
       ]},
       halfStepDown: { label:'Setengah Laras Turun (Eb Ab Db Gb)', strings:[
         {string:4,note:'D#',octave:1},{string:3,note:'G#',octave:1},{string:2,note:'C#',octave:2},{string:1,note:'F#',octave:2}
+      ]},
+      standard5:    { label:'Standar 5-Senar (B E A D G)', strings:[
+        {string:5,note:'B',octave:0},{string:4,note:'E',octave:1},{string:3,note:'A',octave:1},{string:2,note:'D',octave:2},{string:1,note:'G',octave:2}
       ]}
     },
     ukulele: {
@@ -651,6 +683,61 @@
     state.tuning = Object.keys(TUNINGS[state.instrument])[0];
   }
 
+  const MAX_CUSTOM_STRINGS = 12;
+  const TUNING_CODE_PREFIX = 'TS1-';
+
+  // Encode a tuning preset into a compact shareable text code (base64 JSON).
+  function encodeTuningToCode(instrument, presetObj){
+    const payload = {
+      i: instrument,
+      l: presetObj.label,
+      s: presetObj.strings.map(function(s){ return [s.string, s.note, s.octave]; })
+    };
+    try{
+      const json = JSON.stringify(payload);
+      return TUNING_CODE_PREFIX + btoa(unescape(encodeURIComponent(json)));
+    }catch(e){
+      return null;
+    }
+  }
+
+  // Decode + thoroughly validate a shared tuning code. Throws a user-facing
+  // Error with a specific reason on any malformed/unrecognized input.
+  function decodeTuningFromCode(code){
+    code = (code || '').trim();
+    if(!code) throw new Error('Kode kosong.');
+    if(code.indexOf(TUNING_CODE_PREFIX) !== 0) throw new Error('Format kode tidak dikenali.');
+
+    let json;
+    try{
+      json = decodeURIComponent(escape(atob(code.slice(TUNING_CODE_PREFIX.length))));
+    }catch(e){
+      throw new Error('Kode tidak valid atau rusak.');
+    }
+    let payload;
+    try{ payload = JSON.parse(json); }catch(e){ throw new Error('Kode tidak valid atau rusak.'); }
+
+    if(!payload || typeof payload !== 'object') throw new Error('Kode tidak valid.');
+    if(!Object.prototype.hasOwnProperty.call(TUNINGS, payload.i)) throw new Error('Instrumen dalam kode tidak dikenali.');
+    if(typeof payload.l !== 'string' || !payload.l.trim()) throw new Error('Nama tuning tidak valid.');
+    if(!Array.isArray(payload.s) || payload.s.length === 0 || payload.s.length > MAX_CUSTOM_STRINGS){
+      throw new Error('Jumlah senar dalam kode tidak valid.');
+    }
+
+    const strings = payload.s.map(function(arr){
+      if(!Array.isArray(arr) || arr.length !== 3) throw new Error('Data senar dalam kode tidak valid.');
+      const stringNum = arr[0], note = arr[1], octave = arr[2];
+      if(typeof stringNum !== 'number' || stringNum < 1 || stringNum > MAX_CUSTOM_STRINGS){
+        throw new Error('Nomor senar dalam kode tidak valid.');
+      }
+      if(NOTE_NAMES.indexOf(note) === -1) throw new Error('Nada tidak dikenali dalam kode: ' + note);
+      if(typeof octave !== 'number' || octave < 0 || octave > 8) throw new Error('Oktaf dalam kode tidak valid.');
+      return { string: stringNum, note: note, octave: octave };
+    });
+
+    return { instrument: payload.i, label: payload.l.trim().slice(0,60), strings: strings };
+  }
+
   function getTuningList(){
     const all = getAllTunings(state.instrument);
     const preset = all[state.tuning] || Object.values(all)[0];
@@ -673,7 +760,7 @@
     let minF = Infinity, maxF = -Infinity;
     for(let i=0;i<list.length;i++){ if(list[i].freq<minF) minF=list[i].freq; if(list[i].freq>maxF) maxF=list[i].freq; }
     const marginRatio = Math.pow(2, 500/1200); // ~1.335, generous margin either side
-    return { min: minF/marginRatio, max: maxF*marginRatio };
+    return { min: minF/marginRatio, max: maxF*marginRatio, rawMin: minF, rawMax: maxF };
   }
 
   /* =========================================================
@@ -767,7 +854,16 @@
 
   function applyInstrumentConfig(){
     currentBounds = getFreqBounds();
-    const fftSize = state.instrument==='bass' ? 4096 : 2048;
+    const sampleRate = audioCtx ? audioCtx.sampleRate : 44100;
+    // Size the analysis window so it comfortably holds ~3 full periods of the
+    // lowest actual note in the current tuning (not the padded rejection bound —
+    // that's for filtering noise, this is for correctly resolving the real signal).
+    // This scales automatically for extended-range instruments (7-string guitar,
+    // 5-string bass, or any custom low tuning) instead of guessing per-instrument.
+    const neededSamples = Math.ceil((sampleRate / currentBounds.rawMin) * 3.0);
+    let fftSize = 1024;
+    while(fftSize < neededSamples && fftSize < 16384) fftSize *= 2;
+
     if(analyser && analyser.fftSize !== fftSize){
       analyser.fftSize = fftSize;
       timeBuf = new Float32Array(analyser.fftSize);
@@ -993,6 +1089,10 @@
     tuningEditorSave: document.getElementById('tuningEditorSave'),
     tuningEditorCancel: document.getElementById('tuningEditorCancel'),
     closeTuningEditor: document.getElementById('closeTuningEditor'),
+    addStringRowBtn: document.getElementById('addStringRowBtn'),
+    tuningEditorImportCode: document.getElementById('tuningEditorImportCode'),
+    tuningEditorImportBtn: document.getElementById('tuningEditorImportBtn'),
+    exportTuningBtn: document.getElementById('exportTuningBtn'),
     installBanner: document.getElementById('installBanner'),
     installBannerText: document.getElementById('installBannerText'),
     installBtn: document.getElementById('installBtn'),
@@ -1137,6 +1237,7 @@
   function updateDeleteTuningBtnVisibility(){
     const isCustom = isCustomTuning(state.instrument, state.tuning);
     els.deleteTuningBtn.classList.toggle('hidden', !isCustom);
+    els.exportTuningBtn.classList.toggle('hidden', !isCustom);
   }
 
   function renderStringPegs(){
@@ -1314,55 +1415,108 @@
   /* =========================================================
      12. CUSTOM TUNING EDITOR
   ========================================================= */
-  function openTuningEditor(){
-    const template = Object.values(TUNINGS[state.instrument])[0].strings;
-    els.tuningEditorRows.innerHTML = '';
-    template.forEach(function(s){
-      const row = document.createElement('div');
-      row.className = 'cte-row';
-      row.dataset.string = s.string;
+  function shiftNoteDown(note, octave, semitones){
+    let midi = noteMidi(note, octave) - semitones;
+    if(midi < 0) midi = 0;
+    const newOctave = Math.floor(midi/12) - 1;
+    const newNote = NOTE_NAMES[((midi%12)+12)%12];
+    return { note:newNote, octave:newOctave };
+  }
 
-      const label = document.createElement('span');
-      label.className = 'cte-label';
-      label.textContent = 'Senar ' + s.string;
-
-      const noteSel = document.createElement('select');
-      noteSel.className = 'cte-note';
-      NOTE_NAMES.forEach(function(n){
-        const o = document.createElement('option');
-        o.value = n; o.textContent = n;
-        if(n===s.note) o.selected = true;
-        noteSel.appendChild(o);
-      });
-
-      const octInput = document.createElement('input');
-      octInput.type = 'number'; octInput.className = 'cte-octave';
-      octInput.min = 0; octInput.max = 7; octInput.value = s.octave;
-
-      const freqSpan = document.createElement('span');
-      freqSpan.className = 'cte-freq';
-
-      function updateFreq(){
-        const oct = parseInt(octInput.value,10);
-        if(isNaN(oct)) { freqSpan.textContent = '–'; return; }
-        const midi = noteMidi(noteSel.value, oct);
-        freqSpan.textContent = midiToFreq(midi, state.a4).toFixed(2)+' Hz';
-      }
-      noteSel.addEventListener('change', updateFreq);
-      octInput.addEventListener('input', updateFreq);
-      updateFreq();
-
-      row.appendChild(label);
-      row.appendChild(noteSel);
-      row.appendChild(octInput);
-      row.appendChild(freqSpan);
-      els.tuningEditorRows.appendChild(row);
+  function renumberTuningEditorRows(){
+    const rows = els.tuningEditorRows.querySelectorAll('.cte-row');
+    const total = rows.length;
+    rows.forEach(function(row, idx){
+      const stringNum = total - idx;
+      row.dataset.string = stringNum;
+      row.querySelector('.cte-label').textContent = 'Senar ' + stringNum;
+      row.querySelector('.cte-remove').disabled = (total <= 1);
     });
+    els.addStringRowBtn.disabled = (total >= MAX_CUSTOM_STRINGS);
+  }
+
+  function createTuningEditorRow(note, octave){
+    const row = document.createElement('div');
+    row.className = 'cte-row';
+
+    const label = document.createElement('span');
+    label.className = 'cte-label';
+
+    const noteSel = document.createElement('select');
+    noteSel.className = 'cte-note';
+    NOTE_NAMES.forEach(function(n){
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      if(n===note) o.selected = true;
+      noteSel.appendChild(o);
+    });
+
+    const octInput = document.createElement('input');
+    octInput.type = 'number'; octInput.className = 'cte-octave';
+    octInput.min = 0; octInput.max = 7; octInput.value = octave;
+
+    const freqSpan = document.createElement('span');
+    freqSpan.className = 'cte-freq';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'cte-remove';
+    removeBtn.setAttribute('aria-label','Hapus senar ini');
+    removeBtn.textContent = '✕';
+
+    function updateFreq(){
+      const oct = parseInt(octInput.value,10);
+      if(isNaN(oct)) { freqSpan.textContent = '–'; return; }
+      const midi = noteMidi(noteSel.value, oct);
+      freqSpan.textContent = midiToFreq(midi, state.a4).toFixed(2)+' Hz';
+    }
+    noteSel.addEventListener('change', updateFreq);
+    octInput.addEventListener('input', updateFreq);
+    updateFreq();
+
+    removeBtn.addEventListener('click', function(){
+      if(els.tuningEditorRows.querySelectorAll('.cte-row').length <= 1) return;
+      row.remove();
+      renumberTuningEditorRows();
+    });
+
+    row.appendChild(label);
+    row.appendChild(noteSel);
+    row.appendChild(octInput);
+    row.appendChild(freqSpan);
+    row.appendChild(removeBtn);
+    return row;
+  }
+
+  function openTuningEditor(){
+    const currentPreset = getAllTunings(state.instrument)[state.tuning];
+    const template = (currentPreset || Object.values(TUNINGS[state.instrument])[0]).strings;
+    els.tuningEditorRows.innerHTML = '';
+    template.slice().sort(function(a,b){ return b.string - a.string; }).forEach(function(s){
+      els.tuningEditorRows.appendChild(createTuningEditorRow(s.note, s.octave));
+    });
+    renumberTuningEditorRows();
     els.tuningEditorName.value = '';
     els.tuningEditorWarning.textContent = '';
+    els.tuningEditorImportCode.value = '';
     els.tuningEditorOverlay.classList.add('open');
     els.tuningEditorName.focus();
   }
+
+  els.addStringRowBtn.addEventListener('click', function(){
+    const rows = els.tuningEditorRows.querySelectorAll('.cte-row');
+    if(rows.length >= MAX_CUSTOM_STRINGS) return;
+    let note = 'E', octave = 2;
+    if(rows.length){
+      const firstNote = rows[0].querySelector('.cte-note').value;
+      const firstOct = parseInt(rows[0].querySelector('.cte-octave').value,10) || 0;
+      const shifted = shiftNoteDown(firstNote, firstOct, 2); // default: a whole step below current lowest string
+      note = shifted.note; octave = shifted.octave;
+    }
+    const newRow = createTuningEditorRow(note, octave);
+    els.tuningEditorRows.insertBefore(newRow, els.tuningEditorRows.firstChild);
+    renumberTuningEditorRows();
+  });
 
   function closeTuningEditorFn(){
     els.tuningEditorOverlay.classList.remove('open');
@@ -1489,6 +1643,59 @@
     if(e.target === els.tuningEditorOverlay) closeTuningEditorFn();
   });
   els.deleteTuningBtn.addEventListener('click', deleteCurrentTuning);
+
+  els.tuningEditorImportBtn.addEventListener('click', function(){
+    let decoded;
+    try{
+      decoded = decodeTuningFromCode(els.tuningEditorImportCode.value);
+    }catch(err){
+      els.tuningEditorWarning.textContent = err.message || 'Kode tidak valid.';
+      return;
+    }
+    if(decoded.instrument !== state.instrument){
+      state.instrument = decoded.instrument;
+      document.querySelectorAll('.tab').forEach(function(t){
+        const match = t.dataset.instrument === state.instrument;
+        t.classList.toggle('active', match);
+        t.setAttribute('aria-pressed', match ? 'true' : 'false');
+      });
+      updateTabUnderlinePosition();
+    }
+    const id = 'custom_' + Date.now();
+    if(!customTunings[state.instrument]) customTunings[state.instrument] = {};
+    customTunings[state.instrument][id] = { label: decoded.label, strings: decoded.strings };
+    saveCustomTunings();
+
+    state.tuning = id;
+    state.selectedString = null;
+    saveState();
+    renderTuningOptions();
+    renderStringPegs();
+    updateModeUI();
+    resetReadout();
+    if(micActive) applyInstrumentConfig();
+    closeTuningEditorFn();
+    setStatus('Tuning "' + decoded.label + '" berhasil diimport.', 'success');
+  });
+
+  els.exportTuningBtn.addEventListener('click', async function(){
+    if(!isCustomTuning(state.instrument, state.tuning)) return;
+    const preset = getAllTunings(state.instrument)[state.tuning];
+    const code = encodeTuningToCode(state.instrument, preset);
+    if(!code){
+      setStatus('Gagal membuat kode export.', 'warn');
+      return;
+    }
+    let copied = false;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      try{ await navigator.clipboard.writeText(code); copied = true; }catch(e){ copied = false; }
+    }
+    if(copied){
+      setStatus('✅ Kode tuning disalin ke clipboard — bagikan ke teman!', 'success');
+    } else {
+      window.prompt('Salin kode tuning ini:', code);
+    }
+  });
 
   els.a4Range.addEventListener('input', function(){
     state.a4 = parseInt(els.a4Range.value,10);
