@@ -216,6 +216,10 @@
     transition:box-shadow .4s;
   }
   .panel.glow{box-shadow:0 24px 48px -22px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03), 0 0 0 1px var(--green), 0 0 32px -6px var(--green);}
+  .panel.mode-poly .meter{opacity:.22;}
+  .panel.mode-poly .freq-row{display:none;}
+  .panel.mode-poly .cents-val{color:var(--brass-dim); font-size:.68rem;}
+  .panel.mode-poly .note-name{font-size:clamp(2.6rem, 12vw, 3.6rem);}
 
   .meter-wrap{width:100%; display:flex; flex-direction:column; align-items:center;}
   .meter{width:100%; max-width:340px; display:block; overflow:visible;}
@@ -281,6 +285,13 @@
   .peg.nearest{border-color:var(--brass); box-shadow:0 0 0 1px var(--brass) inset;}
   .peg.selected{border-color:var(--brass-bright); background:var(--bg-panel); transform:translateY(-2px) rotate(-1.5deg);}
   .peg.in-tune{border-color:var(--green); box-shadow:0 0 12px -2px var(--green);}
+  .peg.poly-green{border-color:var(--green); box-shadow:0 0 12px -2px var(--green);}
+  .peg.poly-amber{border-color:var(--amber); box-shadow:0 0 10px -3px var(--amber);}
+  .peg.poly-red{border-color:var(--red); box-shadow:0 0 10px -3px var(--red);}
+  .peg-cents{font-size:.58rem; font-family:var(--mono); color:var(--muted); min-height:1.1em; margin-top:1px;}
+  .peg.poly-green .peg-cents{color:var(--green); font-weight:700;}
+  .peg.poly-amber .peg-cents{color:var(--amber); font-weight:700;}
+  .peg.poly-red .peg-cents{color:var(--red); font-weight:700;}
   .peg:focus-visible{outline:2px solid var(--brass-bright); outline-offset:2px;}
 
   /* ---------- Mic button ---------- */
@@ -441,6 +452,7 @@
     <div class="mode-toggle" role="group" aria-label="Mode deteksi senar">
       <button class="mode-btn active" data-mode="auto">Otomatis</button>
       <button class="mode-btn" data-mode="manual">Manual</button>
+      <button class="mode-btn" data-mode="poly">Poly</button>
     </div>
   </div>
 
@@ -824,6 +836,132 @@
   }
 
   /* =========================================================
+     4b. POLYPHONIC DETECTION ENGINE — FFT peak-picking
+        Lets multiple strings be analyzed at once (strum all
+        strings, see every string's tuning status simultaneously).
+
+        This is intentionally NOT built on resonant band-pass
+        filters: testing showed a high-Q filter cascade biases
+        the reading toward its own center frequency once the
+        true note drifts more than ~60 cents away — exactly
+        the situation a tuner most needs to get right. FFT peak
+        picking with quadratic interpolation has no such bias:
+        it reports what is actually in the signal.
+  ========================================================= */
+  function fftRadix2(re, im){
+    const n = re.length;
+    if(n <= 1) return;
+    for(let i=1, j=0; i<n; i++){
+      let bit = n >> 1;
+      for(; j & bit; bit >>= 1) j ^= bit;
+      j ^= bit;
+      if(i < j){
+        let t=re[i]; re[i]=re[j]; re[j]=t;
+        t=im[i]; im[i]=im[j]; im[j]=t;
+      }
+    }
+    for(let len=2; len<=n; len<<=1){
+      const ang = -2*Math.PI/len;
+      const wRe = Math.cos(ang), wI = Math.sin(ang);
+      for(let i=0; i<n; i+=len){
+        let curRe=1, curIm=0;
+        for(let k=0; k<len/2; k++){
+          const uRe=re[i+k], uIm=im[i+k];
+          const vRe=re[i+k+len/2]*curRe - im[i+k+len/2]*curIm;
+          const vIm=re[i+k+len/2]*curIm + im[i+k+len/2]*curRe;
+          re[i+k]=uRe+vRe; im[i+k]=uIm+vIm;
+          re[i+k+len/2]=uRe-vRe; im[i+k+len/2]=uIm-vIm;
+          const nextRe=curRe*wRe-curIm*wI, nextIm=curRe*wI+curIm*wRe;
+          curRe=nextRe; curIm=nextIm;
+        }
+      }
+    }
+  }
+
+  function hannWindowed(signal, n){
+    const re = new Float64Array(n);
+    const len = signal.length;
+    for(let i=0;i<len && i<n;i++){
+      const w = 0.5 - 0.5*Math.cos(2*Math.PI*i/(len-1));
+      re[i] = signal[i]*w;
+    }
+    return re;
+  }
+
+  function magnitudeSpectrum(signal, fftSize){
+    const re = hannWindowed(signal, fftSize);
+    const im = new Float64Array(fftSize);
+    fftRadix2(re, im);
+    const mag = new Float64Array(fftSize/2);
+    for(let i=0;i<fftSize/2;i++) mag[i] = Math.sqrt(re[i]*re[i]+im[i]*im[i]);
+    return mag;
+  }
+
+  function findSpectralPeaks(mag, sampleRate, fftSize, minFreq, maxFreq){
+    const minBin = Math.max(1, Math.floor(minFreq*fftSize/sampleRate));
+    const maxBin = Math.min(mag.length-2, Math.ceil(maxFreq*fftSize/sampleRate));
+    const peaks = [];
+    for(let k=minBin; k<=maxBin; k++){
+      if(mag[k] > mag[k-1] && mag[k] >= mag[k+1]){
+        const a = Math.log(mag[k-1]+1e-12), b = Math.log(mag[k]+1e-12), c = Math.log(mag[k+1]+1e-12);
+        const denom = (a - 2*b + c);
+        let p = denom !== 0 ? 0.5*(a-c)/denom : 0;
+        p = Math.max(-1, Math.min(1, p));
+        peaks.push({ freq: (k+p) * sampleRate/fftSize, magnitude: mag[k] });
+      }
+    }
+    return peaks;
+  }
+
+  // Per-string capture radius: 40% of the gap to the nearest OTHER string in
+  // the tuning (capped at 200c) — wide enough to catch real mistuning, narrow
+  // enough to never overlap into a neighboring string's territory.
+  function computePolySearchRadii(list){
+    return list.map(function(s, i){
+      let minGap = Infinity;
+      list.forEach(function(o, j){
+        if(i===j) return;
+        minGap = Math.min(minGap, Math.abs(centsBetween(s.freq, o.freq)));
+      });
+      return Math.min(200, (minGap===Infinity ? 400 : minGap) * 0.40);
+    });
+  }
+
+  const POLY_FFT_SIZE = 16384;
+  const POLY_PROMINENCE_FACTOR = 6;
+
+  function estimatePolyNoiseFloor(mag, sampleRate, fftSize){
+    // Sample a region guaranteed free of any string/harmonic content (4-9kHz)
+    // instead of the signal's own range, which can be contaminated by dense
+    // legitimate content (e.g. tightly-packed low bass strings + harmonics).
+    const loBin = Math.floor(4000*fftSize/sampleRate);
+    const hiBin = Math.min(mag.length-1, Math.ceil(9000*fftSize/sampleRate));
+    if(hiBin <= loBin) return 0;
+    const slice = Array.prototype.slice.call(mag, loBin, hiBin).sort(function(a,b){return a-b;});
+    return slice.length ? slice[Math.floor(slice.length*0.5)] : 0;
+  }
+
+  // Returns one result per string in `list`: {freq, clarity} or null if that
+  // string isn't confidently sounding right now.
+  function detectPolyphonic(buf, sampleRate, list){
+    const fftSize = POLY_FFT_SIZE;
+    const mag = magnitudeSpectrum(buf, fftSize);
+    const noiseFloor = estimatePolyNoiseFloor(mag, sampleRate, fftSize);
+    const radii = computePolySearchRadii(list);
+    const threshold = noiseFloor * POLY_PROMINENCE_FACTOR;
+
+    return list.map(function(s, i){
+      const ratio = Math.pow(2, radii[i]/1200);
+      const peaks = findSpectralPeaks(mag, sampleRate, fftSize, s.freq/ratio, s.freq*ratio);
+      if(peaks.length===0) return null;
+      let best = peaks[0];
+      for(let k=0;k<peaks.length;k++){ if(peaks[k].magnitude > best.magnitude) best = peaks[k]; }
+      if(best.magnitude < threshold) return null;
+      return { freq: best.freq, magnitude: best.magnitude };
+    });
+  }
+
+  /* =========================================================
      5. AUDIO ENGINE
   ========================================================= */
   let audioCtx=null, mediaStream=null, sourceNode=null, hpFilter=null, lpFilter=null, analyser=null, timeBuf=null;
@@ -855,14 +993,22 @@
   function applyInstrumentConfig(){
     currentBounds = getFreqBounds();
     const sampleRate = audioCtx ? audioCtx.sampleRate : 44100;
-    // Size the analysis window so it comfortably holds ~3 full periods of the
-    // lowest actual note in the current tuning (not the padded rejection bound —
-    // that's for filtering noise, this is for correctly resolving the real signal).
-    // This scales automatically for extended-range instruments (7-string guitar,
-    // 5-string bass, or any custom low tuning) instead of guessing per-instrument.
-    const neededSamples = Math.ceil((sampleRate / currentBounds.rawMin) * 3.0);
-    let fftSize = 1024;
-    while(fftSize < neededSamples && fftSize < 16384) fftSize *= 2;
+    let fftSize;
+    if(state.mode === 'poly'){
+      // Polyphonic detection needs a much longer, fixed analysis window
+      // (validated separately — see detectPolyphonic) to reliably tell
+      // multiple simultaneous strings apart.
+      fftSize = POLY_FFT_SIZE;
+    } else {
+      // Size the analysis window so it comfortably holds ~3 full periods of the
+      // lowest actual note in the current tuning (not the padded rejection bound —
+      // that's for filtering noise, this is for correctly resolving the real signal).
+      // This scales automatically for extended-range instruments (7-string guitar,
+      // 5-string bass, or any custom low tuning) instead of guessing per-instrument.
+      const neededSamples = Math.ceil((sampleRate / currentBounds.rawMin) * 3.0);
+      fftSize = 1024;
+      while(fftSize < neededSamples && fftSize < 16384) fftSize *= 2;
+    }
 
     if(analyser && analyser.fftSize !== fftSize){
       analyser.fftSize = fftSize;
@@ -933,9 +1079,23 @@
     updateMicUI();
     setStatus('Mendengarkan... petik salah satu senar', '');
     smooth.lastValidAt = performance.now();
-    detectionTimer = setInterval(runDetectionTick, 45);
+    startDetectionTimer();
     requestAnimationFrame(renderLoop);
     requestWakeLock();
+  }
+
+  function getDetectionIntervalMs(){
+    // Polyphonic mode analyzes a much longer (16384-sample) buffer, so ticking
+    // as fast as monophonic mode would mostly just re-read stale data.
+    return state.mode === 'poly' ? 250 : 45;
+  }
+  function detectionTickDispatch(){
+    if(state.mode === 'poly') runPolyDetectionTick();
+    else runDetectionTick();
+  }
+  function startDetectionTimer(){
+    if(detectionTimer) clearInterval(detectionTimer);
+    detectionTimer = setInterval(detectionTickDispatch, getDetectionIntervalMs());
   }
 
   function stopMic(){
@@ -1037,6 +1197,105 @@
 
     const displayedTarget = list.find(function(s){ return (s.string+':'+s.note+s.octave)===smooth.displayedKey; }) || target;
     updateReadout({ target:displayedTarget, freq:freq, cents:smooth.emaCents, clarity:result.clarity });
+  }
+
+  let polySmooth = {};
+  let polyLastSoundAt = 0;
+
+  function runPolyDetectionTick(){
+    if(!analyser) return;
+    if(performance.now() < toneSuppressUntil) return;
+
+    analyser.getFloatTimeDomainData(timeBuf);
+
+    let rms = 0;
+    for(let i=0;i<timeBuf.length;i++){ rms += timeBuf[i]*timeBuf[i]; }
+    rms = Math.sqrt(rms/timeBuf.length);
+
+    const list = getTuningList();
+    const results = detectPolyphonic(timeBuf, audioCtx.sampleRate, list);
+    const now = performance.now();
+
+    let soundingCount = 0, inTuneCount = 0;
+
+    list.forEach(function(s, i){
+      const r = results[i];
+      const key = s.string+':'+s.note+s.octave;
+      const peg = els.stringRow.querySelector('.peg[data-string="'+s.string+'"]');
+      if(!peg) return;
+      const centsEl = peg.querySelector('.peg-cents');
+
+      if(!r){
+        if(polySmooth[key] && now - polySmooth[key].lastSeen > 900){
+          delete polySmooth[key];
+          peg.classList.remove('poly-green','poly-amber','poly-red');
+          if(centsEl) centsEl.textContent = '';
+        }
+        return;
+      }
+
+      soundingCount++;
+      const cents = centsBetween(r.freq, s.freq);
+      if(!polySmooth[key]){ polySmooth[key] = { emaCents: cents, lastSeen: now }; }
+      else{
+        polySmooth[key].emaCents += 0.4*(cents - polySmooth[key].emaCents);
+        polySmooth[key].lastSeen = now;
+      }
+      const displayCents = polySmooth[key].emaCents;
+      const absC = Math.abs(displayCents);
+      peg.classList.remove('poly-green','poly-amber','poly-red');
+      if(absC <= 5){ peg.classList.add('poly-green'); inTuneCount++; }
+      else if(absC <= 20){ peg.classList.add('poly-amber'); }
+      else{ peg.classList.add('poly-red'); }
+      if(centsEl){
+        const rounded = Math.round(displayCents);
+        centsEl.textContent = (rounded>=0?'+':'') + rounded;
+      }
+    });
+
+    updateLevelClarity(rms, soundingCount>0 ? (inTuneCount/soundingCount) : 0);
+
+    if(soundingCount === 0){
+      if(now - polyLastSoundAt > 1300){
+        els.readout.classList.add('idle');
+        els.panel.classList.remove('glow');
+        if(!els.statusLine.classList.contains('warn')){
+          setStatus('Petik beberapa atau semua senar, lalu tahan...', '');
+        }
+        els.noteName.textContent = '–';
+        els.noteName.className = 'note-name';
+      }
+      return;
+    }
+
+    polyLastSoundAt = now;
+    els.readout.classList.remove('idle');
+    els.noteName.textContent = inTuneCount + '/' + soundingCount;
+    els.noteName.className = 'note-name ' + (inTuneCount===soundingCount ? 'state-green' : (inTuneCount>0 ? 'state-amber' : 'state-red'));
+    els.freqVal.textContent = '';
+    els.targetFreq.textContent = '';
+    els.centsVal.textContent = 'senar selaras';
+
+    if(inTuneCount === soundingCount){
+      setStatus('🎯 Semua senar yang dipetik sudah selaras!', 'success');
+      els.panel.classList.add('glow');
+      els.hintText.textContent = '🎯 Selaras!';
+      els.hintText.className = 'hint ok';
+    } else {
+      setStatus(inTuneCount + ' dari ' + soundingCount + ' senar selaras — lihat warna tiap senar di bawah', '');
+      els.panel.classList.remove('glow');
+      els.hintText.textContent = '';
+    }
+  }
+
+  function resetPolyState(){
+    polySmooth = {};
+    polyLastSoundAt = 0;
+    document.querySelectorAll('.peg').forEach(function(p){
+      p.classList.remove('poly-green','poly-amber','poly-red');
+      const c = p.querySelector('.peg-cents');
+      if(c) c.textContent = '';
+    });
   }
 
   /* =========================================================
@@ -1146,8 +1405,14 @@
     els.panel.classList.remove('glow');
     liveTargetCents = 0; displayCents = 0;
     if(needleGroup) needleGroup.setAttribute('transform','rotate(0 180 190)');
-    document.querySelectorAll('.peg').forEach(function(p){ p.classList.remove('nearest','selected','in-tune'); });
+    document.querySelectorAll('.peg').forEach(function(p){
+      p.classList.remove('nearest','selected','in-tune','poly-green','poly-amber','poly-red');
+      const c = p.querySelector('.peg-cents');
+      if(c) c.textContent = '';
+    });
     smooth = { emaCents:0, lastCandidateKey:null, candidateCount:0, displayedKey:null, lastValidAt:0, inTuneSince:0, vibrated:false };
+    polySmooth = {};
+    polyLastSoundAt = 0;
   }
 
   function updateReadout(data){
@@ -1270,9 +1535,13 @@
       labelEl.className = 'peg-label';
       labelEl.textContent = 'Senar ' + s.string;
 
+      const centsEl = document.createElement('div');
+      centsEl.className = 'peg-cents';
+
       peg.appendChild(playBtn);
       peg.appendChild(noteEl);
       peg.appendChild(labelEl);
+      peg.appendChild(centsEl);
 
       function selectPeg(){
         state.mode = 'manual';
@@ -1600,6 +1869,7 @@
 
   document.querySelectorAll('.mode-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
+      const previousMode = state.mode;
       state.mode = btn.dataset.mode;
       if(state.mode==='manual' && state.selectedString==null){
         const list = getTuningList();
@@ -1607,6 +1877,16 @@
       }
       saveState();
       updateModeUI();
+      resetPolyState();
+      resetReadout();
+      els.panel.classList.toggle('mode-poly', state.mode==='poly');
+      if(state.mode==='poly'){
+        setStatus('Petik beberapa atau semua senar, lalu tahan...', '');
+      }
+      if(micActive && (state.mode==='poly' || previousMode==='poly')){
+        applyInstrumentConfig();
+        startDetectionTimer();
+      }
     });
   });
 
@@ -1790,12 +2070,15 @@
     resizeWaveCanvas();
     registerServiceWorker();
     maybeShowInstallBanner();
+    els.panel.classList.toggle('mode-poly', state.mode==='poly');
 
     if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
       setStatus('Browser ini tidak mendukung akses mikrofon.', 'warn');
       els.micBtn.disabled = true;
     } else if(!window.isSecureContext){
       setStatus('Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.', 'warn');
+    } else if(state.mode==='poly'){
+      setStatus('Petik beberapa atau semua senar, lalu tahan...', '');
     }
 
     window.addEventListener('resize', function(){
