@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <!--
-  Tuner Senar — Gitar · Bass · Ukulele
-  © 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi undang-undang.
-  Dilarang menyalin, mendistribusikan ulang, atau memodifikasi tanpa izin tertulis pemilik.
-  Dibuat pertama kali: 10 Juli 2026.
+  String Tuner — Guitar · Bass · Ukulele
+  © 2026 REPLACE_WITH_YOUR_NAME. All rights reserved.
+  This code (HTML, CSS, JavaScript) may not be copied, redistributed,
+  or modified in whole or in part without written permission from the
+  copyright holder.
+  First created: July 10, 2026.
 -->
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
-<meta name="description" content="Tuner gitar, bass, dan ukulele akurat berbasis browser. Deteksi pitch real-time, 100% diproses di perangkat, tanpa login.">
-<title>Tuner Senar — Gitar · Bass · Ukulele</title>
+<meta name="description" content="Accurate browser-based guitar, bass, and ukulele tuner. Real-time pitch detection, 100% on-device, no login required.">
+<title>String Tuner — Guitar · Bass · Ukulele</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="String Tuner — Guitar · Bass · Ukulele">
+<meta property="og:description" content="Accurate browser-based guitar, bass, and ukulele tuner. Real-time pitch detection, 100% on-device, no login required.">
+<meta property="og:image" content="./icons/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="String Tuner — Guitar · Bass · Ukulele">
+<meta name="twitter:description" content="Accurate browser-based guitar, bass, and ukulele tuner. Real-time pitch detection, 100% on-device, no login required.">
+<meta name="twitter:image" content="./icons/og-preview.png">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./icons/icon-192.png" sizes="192x192" type="image/png">
@@ -19,7 +31,7 @@
 <meta name="theme-color" content="#141110">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Tuner Senar">
+<meta name="apple-mobile-web-app-title" content="String Tuner">
 <style>
   :root{
     --bg-deep:#141110;
@@ -133,6 +145,7 @@
   .icon-btn:active{transform:scale(.92);}
   .icon-btn.small{width:32px; height:32px; font-size:.85rem;}
   .icon-btn.hidden{display:none !important;}
+  .icon-btn.text-icon{font-family:var(--mono); font-size:.72rem; font-weight:700; letter-spacing:.02em;}
 
   /* ---------- Install banner ---------- */
   .install-banner{
@@ -414,51 +427,52 @@
     <div class="brand">
       <div class="brand-mark" aria-hidden="true">♪</div>
       <div class="brand-text">
-        <h1>Tuner Senar</h1>
-        <p>Gitar · Bass · Ukulele — real-time di browser</p>
+        <h1 data-i18n="appTitle">Tuner Senar</h1>
+        <p data-i18n="appSubtitle">Gitar · Bass · Ukulele — real-time di browser</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <button class="icon-btn" id="themeBtn" aria-label="Ganti ke tema terang">☀️</button>
-      <button class="icon-btn" id="settingsBtn" aria-label="Buka pengaturan">⚙</button>
+      <button class="icon-btn text-icon" id="langBtn" data-i18n-aria="switchLanguage" aria-label="Bahasa Indonesia">ID</button>
+      <button class="icon-btn" id="themeBtn" data-i18n-aria="themeToLight" aria-label="Ganti ke tema terang">☀️</button>
+      <button class="icon-btn" id="settingsBtn" data-i18n-aria="openSettings" aria-label="Buka pengaturan">⚙</button>
     </div>
   </header>
 
   <div class="install-banner" id="installBanner">
-    <span class="install-banner-text" id="installBannerText">Install Tuner Senar sebagai aplikasi untuk akses lebih cepat &amp; bisa offline</span>
+    <span class="install-banner-text" id="installBannerText" data-i18n="installBannerText">Install Tuner Senar sebagai aplikasi untuk akses lebih cepat &amp; bisa offline</span>
     <div class="install-banner-actions">
-      <button class="install-btn" id="installBtn">Install</button>
-      <button class="install-dismiss" id="installDismiss" aria-label="Tutup pemberitahuan install">✕</button>
+      <button class="install-btn" id="installBtn" data-i18n="installBtn">Install</button>
+      <button class="install-dismiss" id="installDismiss" data-i18n-aria="closeInstallBanner" aria-label="Tutup pemberitahuan install">✕</button>
     </div>
   </div>
 
-  <nav class="instrument-tabs" aria-label="Pilih instrumen">
+  <nav class="instrument-tabs" data-i18n-aria="selectInstrument" aria-label="Pilih instrumen">
     <span class="tab-underline" id="tabUnderline" aria-hidden="true"></span>
-    <button class="tab" data-instrument="guitar" aria-pressed="true">Gitar</button>
-    <button class="tab" data-instrument="bass" aria-pressed="false">Bass</button>
-    <button class="tab" data-instrument="ukulele" aria-pressed="false">Ukulele</button>
+    <button class="tab" data-instrument="guitar" data-i18n="tabGuitar" aria-pressed="true">Gitar</button>
+    <button class="tab" data-instrument="bass" data-i18n="tabBass" aria-pressed="false">Bass</button>
+    <button class="tab" data-instrument="ukulele" data-i18n="tabUkulele" aria-pressed="false">Ukulele</button>
   </nav>
 
   <div class="subtoolbar">
     <label class="field">
-      <span class="field-label">Setelan</span>
+      <span class="field-label" data-i18n="tuningLabel">Setelan</span>
       <div class="field-row">
-        <select id="tuningSelect" aria-label="Pilih setelan tuning"></select>
-        <button class="icon-btn small" id="addTuningBtn" aria-label="Buat tuning kustom">+</button>
-        <button class="icon-btn small hidden" id="exportTuningBtn" aria-label="Bagikan tuning kustom ini sebagai kode">⇪</button>
-        <button class="icon-btn small hidden" id="deleteTuningBtn" aria-label="Hapus tuning kustom ini">🗑</button>
+        <select id="tuningSelect" data-i18n-aria="selectTuning" aria-label="Pilih setelan tuning"></select>
+        <button class="icon-btn small" id="addTuningBtn" data-i18n-aria="createCustomTuning" aria-label="Buat tuning kustom">+</button>
+        <button class="icon-btn small hidden" id="exportTuningBtn" data-i18n-aria="shareCustomTuning" aria-label="Bagikan tuning kustom ini sebagai kode">⇪</button>
+        <button class="icon-btn small hidden" id="deleteTuningBtn" data-i18n-aria="deleteCustomTuning" aria-label="Hapus tuning kustom ini">🗑</button>
       </div>
     </label>
-    <div class="mode-toggle" role="group" aria-label="Mode deteksi senar">
-      <button class="mode-btn active" data-mode="auto">Otomatis</button>
-      <button class="mode-btn" data-mode="manual">Manual</button>
-      <button class="mode-btn" data-mode="poly">Poly</button>
+    <div class="mode-toggle" role="group" data-i18n-aria="modeDetectionLabel" aria-label="Mode deteksi senar">
+      <button class="mode-btn active" data-mode="auto" data-i18n="modeAuto">Otomatis</button>
+      <button class="mode-btn" data-mode="manual" data-i18n="modeManual">Manual</button>
+      <button class="mode-btn" data-mode="poly" data-i18n="modePoly">Poly</button>
     </div>
   </div>
 
   <main class="panel" id="tunerPanel">
     <div class="meter-wrap">
-      <svg class="meter" id="meterSvg" viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meter penyetelan nada">
+      <svg class="meter" id="meterSvg" viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" role="img" data-i18n-aria="meterAriaLabel" aria-label="Meter penyetelan nada">
         <path id="meterTrack" d="M30,190 A150,150 0 0 1 330,190" stroke="#3B2E22" stroke-width="10" fill="none" stroke-linecap="round"/>
         <path id="meterInTuneZone" d="M156.5,41.9 A150,150 0 0 1 203.5,41.9" stroke="#6FBE7A" stroke-width="13" fill="none" stroke-linecap="round" opacity="0.85"/>
         <text id="flatLabel" x="16" y="200" font-family="ui-monospace, monospace" font-size="15" fill="#8A7148">♭</text>
@@ -476,19 +490,19 @@
           <span id="freqVal">0.0</span><span class="unit">Hz</span>
           <span class="target-freq" id="targetFreq"></span>
         </div>
-        <div class="cents-val" id="centsVal">– cents</div>
+        <div class="cents-val" id="centsVal" data-i18n="defaultCents">– cents</div>
         <div class="hint" id="hintText"></div>
       </div>
 
-      <div class="status-line" id="statusLine" role="status" aria-live="polite" aria-atomic="true">Tekan &quot;Mulai Tuning&quot; lalu izinkan akses mikrofon</div>
+      <div class="status-line" id="statusLine" role="status" aria-live="polite" aria-atomic="true" data-i18n="defaultStatus">Tekan &quot;Mulai Tuning&quot; lalu izinkan akses mikrofon</div>
 
       <div class="signal-meters">
         <div class="meter-bar">
-          <span class="meter-bar-label">Level</span>
+          <span class="meter-bar-label" data-i18n="level">Level</span>
           <div class="bar"><i id="levelBar"></i></div>
         </div>
         <div class="meter-bar">
-          <span class="meter-bar-label">Kejelasan</span>
+          <span class="meter-bar-label" data-i18n="clarity">Kejelasan</span>
           <div class="bar clarity"><i id="clarityBar"></i></div>
         </div>
       </div>
@@ -496,47 +510,47 @@
 
     <div class="wave-wrap">
       <div class="wave-frame"><canvas id="waveCanvas"></canvas></div>
-      <span class="wave-label">Bentuk gelombang sinyal</span>
+      <span class="wave-label" data-i18n="waveformLabel">Bentuk gelombang sinyal</span>
     </div>
 
     <div class="pegs-row" id="stringRow"></div>
 
     <button class="mic-btn" id="micBtn">
       <span class="mic-icon" aria-hidden="true"></span>
-      <span id="micBtnLabel">Mulai Tuning</span>
+      <span id="micBtnLabel" data-i18n="startTuning">Mulai Tuning</span>
     </button>
-    <p class="mic-hint">Pintasan: tekan <kbd>Spasi</kbd> untuk mulai/berhenti</p>
+    <p class="mic-hint" id="micHintText">Pintasan: tekan <kbd>Spasi</kbd> untuk mulai/berhenti</p>
   </main>
 
-  <p class="privacy-note">🔒 Semua analisis suara diproses langsung di perangkat Anda — tidak ada audio yang direkam, disimpan, atau dikirim ke server mana pun. Tidak perlu login.</p>
-  <p class="tips-note">Tips: pilih instrumen &amp; setelan di atas, izinkan mikrofon, lalu petik senar satu per satu di ruangan yang tidak terlalu berisik.</p>
+  <p class="privacy-note" data-i18n="privacyNote">🔒 Semua analisis suara diproses langsung di perangkat Anda — tidak ada audio yang direkam, disimpan, atau dikirim ke server mana pun. Tidak perlu login.</p>
+  <p class="tips-note" data-i18n="tipsNote">Tips: pilih instrumen &amp; setelan di atas, izinkan mikrofon, lalu petik senar satu per satu di ruangan yang tidak terlalu berisik.</p>
 
-  <footer class="foot">Deteksi pitch dengan algoritma autocorrelation (McLeod Pitch Method) — 100% berjalan di perangkat Anda.<br>© 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi.</footer>
+  <footer class="foot"><span data-i18n="footerText">Deteksi pitch dengan algoritma autocorrelation (McLeod Pitch Method) — 100% berjalan di perangkat Anda.</span><br><span data-i18n="copyrightText">© 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi.</span></footer>
 </div>
 
 <div class="modal-overlay" id="settingsOverlay">
   <div class="modal-card">
     <div class="modal-head">
-      <h2>Pengaturan</h2>
-      <button class="icon-btn" id="closeSettings" aria-label="Tutup pengaturan">✕</button>
+      <h2 data-i18n="settingsTitle">Pengaturan</h2>
+      <button class="icon-btn" id="closeSettings" data-i18n-aria="closeSettings" aria-label="Tutup pengaturan">✕</button>
     </div>
 
     <div class="set-field">
-      <div class="set-field-top"><span>Kalibrasi A4</span><span id="a4Val">440 Hz</span></div>
-      <input type="range" id="a4Range" min="430" max="450" step="1" value="440" aria-label="Kalibrasi A4 dalam Hz">
-      <p class="set-desc">Standar internasional adalah 440 Hz. Ubah hanya jika Anda menyetel bersama alat lain dengan referensi berbeda.</p>
+      <div class="set-field-top"><span data-i18n="a4Calibration">Kalibrasi A4</span><span id="a4Val">440 Hz</span></div>
+      <input type="range" id="a4Range" min="430" max="450" step="1" value="440" data-i18n-aria="a4Aria" aria-label="Kalibrasi A4 dalam Hz">
+      <p class="set-desc" data-i18n="a4Desc">Standar internasional adalah 440 Hz. Ubah hanya jika Anda menyetel bersama alat lain dengan referensi berbeda.</p>
     </div>
 
     <div class="set-field">
-      <div class="set-field-top"><span>Sensitivitas Mikrofon</span><span id="sensVal">5</span></div>
-      <input type="range" id="sensRange" min="1" max="10" step="1" value="5" aria-label="Sensitivitas mikrofon">
-      <p class="set-desc">Naikkan jika suara senar terlalu pelan untuk terdeteksi. Turunkan jika suara sekitar ikut terbaca.</p>
+      <div class="set-field-top"><span data-i18n="micSensitivity">Sensitivitas Mikrofon</span><span id="sensVal">5</span></div>
+      <input type="range" id="sensRange" min="1" max="10" step="1" value="5" data-i18n-aria="micSensitivityAria" aria-label="Sensitivitas mikrofon">
+      <p class="set-desc" data-i18n="micSensitivityDesc">Naikkan jika suara senar terlalu pelan untuk terdeteksi. Turunkan jika suara sekitar ikut terbaca.</p>
     </div>
 
-    <button class="reset-btn" id="resetSettings">Kembalikan ke Default</button>
+    <button class="reset-btn" id="resetSettings" data-i18n="resetDefaults">Kembalikan ke Default</button>
 
     <div class="help-box">
-      <p><b>Cara pakai:</b> pilih instrumen &amp; setelan, tekan Mulai Tuning, lalu petik satu senar. Jarum akan bergerak ke zona hijau saat nada pas. Mode Otomatis mendeteksi senar terdekat secara otomatis; Mode Manual mengunci ke satu senar pilihan Anda. Tanda &quot;+&quot; di sebelah pilihan setelan bisa dipakai untuk membuat tuning kustom sendiri.</p>
+      <p><b data-i18n="howToUseTitle">Cara pakai:</b> <span data-i18n="howToUseBody">pilih instrumen &amp; setelan, tekan Mulai Tuning, lalu petik satu senar. Jarum akan bergerak ke zona hijau saat nada pas. Mode Otomatis mendeteksi senar terdekat secara otomatis; Mode Manual mengunci ke satu senar pilihan Anda; Mode Poly membiarkan Anda menggenjreng banyak senar sekaligus. Tanda &quot;+&quot; di sebelah pilihan setelan bisa dipakai untuk membuat tuning kustom sendiri.</span></p>
     </div>
   </div>
 </div>
@@ -544,35 +558,35 @@
 <div class="modal-overlay" id="tuningEditorOverlay">
   <div class="modal-card">
     <div class="modal-head">
-      <h2>Tuning Kustom</h2>
-      <button class="icon-btn" id="closeTuningEditor" aria-label="Tutup editor tuning">✕</button>
+      <h2 data-i18n="customTuningTitle">Tuning Kustom</h2>
+      <button class="icon-btn" id="closeTuningEditor" data-i18n-aria="closeTuningEditor" aria-label="Tutup editor tuning">✕</button>
     </div>
 
     <div class="set-field">
-      <span class="field-label">Punya Kode Tuning? (opsional)</span>
+      <span class="field-label" data-i18n="haveTuningCode">Punya Kode Tuning? (opsional)</span>
       <div class="field-row">
-        <input type="text" id="tuningEditorImportCode" placeholder="Tempel kode TS1-... di sini">
-        <button class="reset-btn" id="tuningEditorImportBtn">Import</button>
+        <input type="text" id="tuningEditorImportCode" data-i18n-placeholder="pasteCodePlaceholder" placeholder="Tempel kode TS1-... di sini">
+        <button class="reset-btn" id="tuningEditorImportBtn" data-i18n="importBtn">Import</button>
       </div>
-      <p class="set-desc">Atau isi manual di bawah:</p>
+      <p class="set-desc" data-i18n="orFillManually">Atau isi manual di bawah:</p>
     </div>
 
     <div class="set-field">
-      <span class="field-label">Nama Tuning</span>
-      <input type="text" id="tuningEditorName" placeholder="mis. Setelan lagu X">
+      <span class="field-label" data-i18n="tuningNameLabel">Nama Tuning</span>
+      <input type="text" id="tuningEditorName" data-i18n-placeholder="tuningNamePlaceholder" placeholder="mis. Setelan lagu X">
     </div>
 
     <div class="set-field" id="tuningEditorRowsWrap">
-      <span class="field-label">Nada per Senar</span>
+      <span class="field-label" data-i18n="notesPerStringLabel">Nada per Senar</span>
       <div id="tuningEditorRows" style="display:flex; flex-direction:column; gap:8px;"></div>
-      <button class="add-string-btn" id="addStringRowBtn" type="button">+ Tambah Senar</button>
+      <button class="add-string-btn" id="addStringRowBtn" type="button" data-i18n="addStringBtn">+ Tambah Senar</button>
     </div>
 
     <div class="cte-warning" id="tuningEditorWarning"></div>
 
     <div class="btn-row">
-      <button class="reset-btn" id="tuningEditorCancel">Batal</button>
-      <button class="primary-btn" id="tuningEditorSave">Simpan Tuning</button>
+      <button class="reset-btn" id="tuningEditorCancel" data-i18n="cancelBtn">Batal</button>
+      <button class="primary-btn" id="tuningEditorSave" data-i18n="saveTuningBtn">Simpan Tuning</button>
     </div>
   </div>
 </div>
@@ -596,66 +610,302 @@
   ========================================================= */
   const TUNINGS = {
     guitar: {
-      standard:      { label:'Standar (E A D G B E)', strings:[
+      standard:      { labelKey:'tuningGuitarStandard', strings:[
         {string:6,note:'E',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
         {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
       ]},
-      dropD:         { label:'Drop D (D A D G B E)', strings:[
+      dropD:         { labelKey:'tuningGuitarDropD', strings:[
         {string:6,note:'D',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
         {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
       ]},
-      halfStepDown:  { label:'Setengah Laras Turun (Eb Ab Db Gb Bb Eb)', strings:[
+      halfStepDown:  { labelKey:'tuningGuitarHalfStepDown', strings:[
         {string:6,note:'D#',octave:2},{string:5,note:'G#',octave:2},{string:4,note:'C#',octave:3},
         {string:3,note:'F#',octave:3},{string:2,note:'A#',octave:3},{string:1,note:'D#',octave:4}
       ]},
-      fullStepDown:  { label:'Satu Laras Turun (D G C F A D)', strings:[
+      fullStepDown:  { labelKey:'tuningGuitarFullStepDown', strings:[
         {string:6,note:'D',octave:2},{string:5,note:'G',octave:2},{string:4,note:'C',octave:3},
         {string:3,note:'F',octave:3},{string:2,note:'A',octave:3},{string:1,note:'D',octave:4}
       ]},
-      openG:         { label:'Open G (D G D G B D)', strings:[
+      openG:         { labelKey:'tuningGuitarOpenG', strings:[
         {string:6,note:'D',octave:2},{string:5,note:'G',octave:2},{string:4,note:'D',octave:3},
         {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'D',octave:4}
       ]},
-      openD:         { label:'Open D (D A D F# A D)', strings:[
+      openD:         { labelKey:'tuningGuitarOpenD', strings:[
         {string:6,note:'D',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
         {string:3,note:'F#',octave:3},{string:2,note:'A',octave:3},{string:1,note:'D',octave:4}
       ]},
-      standard7:     { label:'Standar 7-Senar (B E A D G B E)', strings:[
+      standard7:     { labelKey:'tuningGuitarStandard7', strings:[
         {string:7,note:'B',octave:1},{string:6,note:'E',octave:2},{string:5,note:'A',octave:2},{string:4,note:'D',octave:3},
         {string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
       ]}
     },
     bass: {
-      standard:     { label:'Standar (E A D G)', strings:[
+      standard:     { labelKey:'tuningBassStandard', strings:[
         {string:4,note:'E',octave:1},{string:3,note:'A',octave:1},{string:2,note:'D',octave:2},{string:1,note:'G',octave:2}
       ]},
-      dropD:        { label:'Drop D (D A D G)', strings:[
+      dropD:        { labelKey:'tuningBassDropD', strings:[
         {string:4,note:'D',octave:1},{string:3,note:'A',octave:1},{string:2,note:'D',octave:2},{string:1,note:'G',octave:2}
       ]},
-      halfStepDown: { label:'Setengah Laras Turun (Eb Ab Db Gb)', strings:[
+      halfStepDown: { labelKey:'tuningBassHalfStepDown', strings:[
         {string:4,note:'D#',octave:1},{string:3,note:'G#',octave:1},{string:2,note:'C#',octave:2},{string:1,note:'F#',octave:2}
       ]},
-      standard5:    { label:'Standar 5-Senar (B E A D G)', strings:[
+      standard5:    { labelKey:'tuningBassStandard5', strings:[
         {string:5,note:'B',octave:0},{string:4,note:'E',octave:1},{string:3,note:'A',octave:1},{string:2,note:'D',octave:2},{string:1,note:'G',octave:2}
       ]}
     },
     ukulele: {
-      standardHighG: { label:'Standar High-G (G C E A)', strings:[
+      standardHighG: { labelKey:'tuningUkuleleStandardHighG', strings:[
         {string:4,note:'G',octave:4},{string:3,note:'C',octave:4},{string:2,note:'E',octave:4},{string:1,note:'A',octave:4}
       ]},
-      lowG:          { label:'Low-G (G C E A)', strings:[
+      lowG:          { labelKey:'tuningUkuleleLowG', strings:[
         {string:4,note:'G',octave:3},{string:3,note:'C',octave:4},{string:2,note:'E',octave:4},{string:1,note:'A',octave:4}
       ]},
-      baritone:      { label:'Baritone (D G B E)', strings:[
+      baritone:      { labelKey:'tuningUkuleleBaritone', strings:[
         {string:4,note:'D',octave:3},{string:3,note:'G',octave:3},{string:2,note:'B',octave:3},{string:1,note:'E',octave:4}
       ]}
     }
   };
 
   /* =========================================================
+     1b. TRANSLATIONS (English default; Indonesian available)
+  ========================================================= */
+  const I18N = {
+    en: {
+      appTitle: 'String Tuner',
+      appSubtitle: 'Guitar · Bass · Ukulele — real-time in your browser',
+      themeToLight: 'Switch to light theme',
+      themeToDark: 'Switch to dark theme',
+      openSettings: 'Open settings',
+      switchLanguage: 'Bahasa Indonesia',
+      installBannerText: 'Install String Tuner for faster access & offline use',
+      installBannerIOS: 'On iPhone: tap Share then "Add to Home Screen" to install',
+      installBtn: 'Install',
+      closeInstallBanner: 'Close install notice',
+      selectInstrument: 'Select instrument',
+      tabGuitar: 'Guitar', tabBass: 'Bass', tabUkulele: 'Ukulele',
+      tuningLabel: 'Tuning',
+      selectTuning: 'Select tuning',
+      createCustomTuning: 'Create custom tuning',
+      shareCustomTuning: 'Share this custom tuning as a code',
+      deleteCustomTuning: 'Delete this custom tuning',
+      modeDetectionLabel: 'String detection mode',
+      modeAuto: 'Automatic', modeManual: 'Manual', modePoly: 'Poly',
+      meterAriaLabel: 'Tuning meter',
+      defaultStatus: 'Press "Start Tuning" then allow microphone access',
+      defaultCents: '– cents',
+      level: 'Level', clarity: 'Clarity',
+      waveformLabel: 'Signal waveform',
+      startTuning: 'Start Tuning', stopTuning: 'Stop',
+      micShortcutHint: 'Shortcut: press {0} to start/stop',
+      spaceKeyLabel: 'Space',
+      privacyNote: '🔒 All audio analysis happens right on your device — no audio is ever recorded, stored, or sent to any server. No login required.',
+      tipsNote: 'Tip: pick your instrument & tuning above, allow the microphone, then pluck strings one at a time in a reasonably quiet room.',
+      footerText: 'Pitch detection via autocorrelation (McLeod Pitch Method) — 100% runs on your device.',
+      copyrightText: '© 2026 REPLACE_WITH_YOUR_NAME. All rights reserved.',
+      settingsTitle: 'Settings',
+      closeSettings: 'Close settings',
+      a4Calibration: 'A4 Calibration',
+      a4Aria: 'A4 calibration in Hz',
+      a4Desc: 'International standard is 440 Hz. Only change this if tuning alongside another instrument with a different reference.',
+      micSensitivity: 'Microphone Sensitivity',
+      micSensitivityAria: 'Microphone sensitivity',
+      micSensitivityDesc: "Increase if string sound is too quiet to detect. Decrease if ambient noise gets picked up.",
+      resetDefaults: 'Reset to Default',
+      howToUseTitle: 'How to use:',
+      howToUseBody: 'pick an instrument & tuning, press Start Tuning, then pluck one string. The needle moves into the green zone when the pitch is right. Automatic mode detects the nearest string automatically; Manual mode locks onto one string you choose; Poly mode lets you strum multiple strings at once. The "+" next to the tuning dropdown lets you build your own custom tuning.',
+      customTuningTitle: 'Custom Tuning',
+      closeTuningEditor: 'Close tuning editor',
+      haveTuningCode: 'Have a Tuning Code? (optional)',
+      pasteCodePlaceholder: 'Paste a TS1-... code here',
+      importBtn: 'Import',
+      orFillManually: 'Or fill in manually below:',
+      tuningNameLabel: 'Tuning Name',
+      tuningNamePlaceholder: 'e.g. Tuning for song X',
+      notesPerStringLabel: 'Note per String',
+      addStringBtn: '+ Add String',
+      cancelBtn: 'Cancel',
+      saveTuningBtn: 'Save Tuning',
+      removeThisString: 'Remove this string',
+      micNotSupported: 'This browser does not support microphone access.',
+      needHttps: 'Open this page over HTTPS or localhost so the microphone can be accessed.',
+      listening: 'Listening... pluck a string',
+      stoppedListening: 'Press "Start Tuning" to listen',
+      playingReferenceTone: "🔊 Playing reference tone — use headphones so the mic doesn't pick it up",
+      polyWaitingPrompt: 'Pluck some or all strings, then hold...',
+      polyAllInTune: '🎯 All plucked strings are in tune!',
+      stringInTune: '🎯 String {0} in tune',
+      listeningToString: 'Listening to string {0} ({1}{2})',
+      exportFailed: 'Failed to create export code.',
+      exportSuccess: "✅ Tuning code copied to clipboard — share it with a friend!",
+      tuningImported: 'Tuning "{0}" imported successfully.',
+      micDenied: 'Microphone access denied. Allow microphone access in your browser settings, then try again.',
+      micNotFound: 'Microphone not found. Make sure your device has an active microphone.',
+      micGenericError: 'Could not access the microphone.',
+      inTuneText: '🎯 In tune!',
+      tooHigh: '▼ Loosen slightly (too high)',
+      tooLow: '▲ Tighten slightly (too low)',
+      polyPartial: "{0} of {1} strings in tune — check each string's color below",
+      stringsInTuneLabel: 'strings in tune',
+      codeEmpty: 'Empty code.',
+      codeUnrecognized: 'Unrecognized code format.',
+      codeInvalidCorrupt: 'Invalid or corrupted code.',
+      codeInvalid: 'Invalid code.',
+      codeUnknownInstrument: 'Unrecognized instrument in code.',
+      codeInvalidName: 'Invalid tuning name.',
+      codeInvalidStringCount: 'Invalid string count in code.',
+      codeInvalidStringData: 'Invalid string data in code.',
+      codeInvalidStringNumber: 'Invalid string number in code.',
+      codeUnknownNote: 'Unrecognized note in code: {0}',
+      codeInvalidOctave: 'Invalid octave in code.',
+      giveTuningAName: 'Please give this tuning a name.',
+      confirmDeleteTuning: 'Delete custom tuning "{0}"?',
+      copyThisCode: 'Copy this tuning code:',
+      stringLabel: 'String {0}',
+      selectStringAria: 'Select string {0}, note {1}',
+      playReferenceToneAria: 'Play reference tone {0}',
+      tuningGroupBuiltIn: 'Built-in',
+      tuningGroupCustom: 'Custom',
+      tuningGuitarStandard: 'Standard (E A D G B E)',
+      tuningGuitarDropD: 'Drop D (D A D G B E)',
+      tuningGuitarHalfStepDown: 'Half Step Down (Eb Ab Db Gb Bb Eb)',
+      tuningGuitarFullStepDown: 'Full Step Down (D G C F A D)',
+      tuningGuitarOpenG: 'Open G (D G D G B D)',
+      tuningGuitarOpenD: 'Open D (D A D F# A D)',
+      tuningGuitarStandard7: 'Standard 7-String (B E A D G B E)',
+      tuningBassStandard: 'Standard (E A D G)',
+      tuningBassDropD: 'Drop D (D A D G)',
+      tuningBassHalfStepDown: 'Half Step Down (Eb Ab Db Gb)',
+      tuningBassStandard5: 'Standard 5-String (B E A D G)',
+      tuningUkuleleStandardHighG: 'Standard High-G (G C E A)',
+      tuningUkuleleLowG: 'Low-G (G C E A)',
+      tuningUkuleleBaritone: 'Baritone (D G B E)'
+    },
+    id: {
+      appTitle: 'Tuner Senar',
+      appSubtitle: 'Gitar · Bass · Ukulele — real-time di browser',
+      themeToLight: 'Ganti ke tema terang',
+      themeToDark: 'Ganti ke tema gelap',
+      openSettings: 'Buka pengaturan',
+      switchLanguage: 'English',
+      installBannerText: 'Install Tuner Senar sebagai aplikasi untuk akses lebih cepat & bisa offline',
+      installBannerIOS: 'Di iPhone: ketuk tombol Share lalu "Add to Home Screen" untuk install',
+      installBtn: 'Install',
+      closeInstallBanner: 'Tutup pemberitahuan install',
+      selectInstrument: 'Pilih instrumen',
+      tabGuitar: 'Gitar', tabBass: 'Bass', tabUkulele: 'Ukulele',
+      tuningLabel: 'Setelan',
+      selectTuning: 'Pilih setelan tuning',
+      createCustomTuning: 'Buat tuning kustom',
+      shareCustomTuning: 'Bagikan tuning kustom ini sebagai kode',
+      deleteCustomTuning: 'Hapus tuning kustom ini',
+      modeDetectionLabel: 'Mode deteksi senar',
+      modeAuto: 'Otomatis', modeManual: 'Manual', modePoly: 'Poly',
+      meterAriaLabel: 'Meter penyetelan nada',
+      defaultStatus: 'Tekan "Mulai Tuning" lalu izinkan akses mikrofon',
+      defaultCents: '– cents',
+      level: 'Level', clarity: 'Kejelasan',
+      waveformLabel: 'Bentuk gelombang sinyal',
+      startTuning: 'Mulai Tuning', stopTuning: 'Berhenti',
+      micShortcutHint: 'Pintasan: tekan {0} untuk mulai/berhenti',
+      spaceKeyLabel: 'Spasi',
+      privacyNote: '🔒 Semua analisis suara diproses langsung di perangkat Anda — tidak ada audio yang direkam, disimpan, atau dikirim ke server mana pun. Tidak perlu login.',
+      tipsNote: 'Tips: pilih instrumen & setelan di atas, izinkan mikrofon, lalu petik senar satu per satu di ruangan yang tidak terlalu berisik.',
+      footerText: 'Deteksi pitch dengan algoritma autocorrelation (McLeod Pitch Method) — 100% berjalan di perangkat Anda.',
+      copyrightText: '© 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi.',
+      settingsTitle: 'Pengaturan',
+      closeSettings: 'Tutup pengaturan',
+      a4Calibration: 'Kalibrasi A4',
+      a4Aria: 'Kalibrasi A4 dalam Hz',
+      a4Desc: 'Standar internasional adalah 440 Hz. Ubah hanya jika Anda menyetel bersama alat lain dengan referensi berbeda.',
+      micSensitivity: 'Sensitivitas Mikrofon',
+      micSensitivityAria: 'Sensitivitas mikrofon',
+      micSensitivityDesc: 'Naikkan jika suara senar terlalu pelan untuk terdeteksi. Turunkan jika suara sekitar ikut terbaca.',
+      resetDefaults: 'Kembalikan ke Default',
+      howToUseTitle: 'Cara pakai:',
+      howToUseBody: 'pilih instrumen & setelan, tekan Mulai Tuning, lalu petik satu senar. Jarum akan bergerak ke zona hijau saat nada pas. Mode Otomatis mendeteksi senar terdekat secara otomatis; Mode Manual mengunci ke satu senar pilihan Anda; Mode Poly membiarkan Anda menggenjreng banyak senar sekaligus. Tanda "+" di sebelah pilihan setelan bisa dipakai untuk membuat tuning kustom sendiri.',
+      customTuningTitle: 'Tuning Kustom',
+      closeTuningEditor: 'Tutup editor tuning',
+      haveTuningCode: 'Punya Kode Tuning? (opsional)',
+      pasteCodePlaceholder: 'Tempel kode TS1-... di sini',
+      importBtn: 'Import',
+      orFillManually: 'Atau isi manual di bawah:',
+      tuningNameLabel: 'Nama Tuning',
+      tuningNamePlaceholder: 'mis. Setelan lagu X',
+      notesPerStringLabel: 'Nada per Senar',
+      addStringBtn: '+ Tambah Senar',
+      cancelBtn: 'Batal',
+      saveTuningBtn: 'Simpan Tuning',
+      removeThisString: 'Hapus senar ini',
+      micNotSupported: 'Browser ini tidak mendukung akses mikrofon.',
+      needHttps: 'Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.',
+      listening: 'Mendengarkan... petik salah satu senar',
+      stoppedListening: 'Tekan "Mulai Tuning" untuk mendengarkan',
+      playingReferenceTone: '🔊 Memutar nada referensi — pakai headphone agar mikrofon tidak ikut menangkapnya',
+      polyWaitingPrompt: 'Petik beberapa atau semua senar, lalu tahan...',
+      polyAllInTune: '🎯 Semua senar yang dipetik sudah selaras!',
+      stringInTune: '🎯 Senar {0} selaras',
+      listeningToString: 'Mendengarkan senar {0} ({1}{2})',
+      exportFailed: 'Gagal membuat kode export.',
+      exportSuccess: '✅ Kode tuning disalin ke clipboard — bagikan ke teman!',
+      tuningImported: 'Tuning "{0}" berhasil diimport.',
+      micDenied: 'Akses mikrofon ditolak. Izinkan akses mikrofon di pengaturan browser, lalu coba lagi.',
+      micNotFound: 'Mikrofon tidak ditemukan. Pastikan perangkat memiliki mikrofon aktif.',
+      micGenericError: 'Tidak dapat mengakses mikrofon.',
+      inTuneText: '🎯 Selaras!',
+      tooHigh: '▼ Kendurkan sedikit (terlalu tinggi)',
+      tooLow: '▲ Kencangkan sedikit (terlalu rendah)',
+      polyPartial: '{0} dari {1} senar selaras — lihat warna tiap senar di bawah',
+      stringsInTuneLabel: 'senar selaras',
+      codeEmpty: 'Kode kosong.',
+      codeUnrecognized: 'Format kode tidak dikenali.',
+      codeInvalidCorrupt: 'Kode tidak valid atau rusak.',
+      codeInvalid: 'Kode tidak valid.',
+      codeUnknownInstrument: 'Instrumen dalam kode tidak dikenali.',
+      codeInvalidName: 'Nama tuning tidak valid.',
+      codeInvalidStringCount: 'Jumlah senar dalam kode tidak valid.',
+      codeInvalidStringData: 'Data senar dalam kode tidak valid.',
+      codeInvalidStringNumber: 'Nomor senar dalam kode tidak valid.',
+      codeUnknownNote: 'Nada tidak dikenali dalam kode: {0}',
+      codeInvalidOctave: 'Oktaf dalam kode tidak valid.',
+      giveTuningAName: 'Beri nama untuk tuning ini.',
+      confirmDeleteTuning: 'Hapus tuning kustom "{0}"?',
+      copyThisCode: 'Salin kode tuning ini:',
+      stringLabel: 'Senar {0}',
+      selectStringAria: 'Pilih senar {0}, nada {1}',
+      playReferenceToneAria: 'Dengarkan nada referensi {0}',
+      tuningGroupBuiltIn: 'Bawaan',
+      tuningGroupCustom: 'Kustom',
+      tuningGuitarStandard: 'Standar (E A D G B E)',
+      tuningGuitarDropD: 'Drop D (D A D G B E)',
+      tuningGuitarHalfStepDown: 'Setengah Laras Turun (Eb Ab Db Gb Bb Eb)',
+      tuningGuitarFullStepDown: 'Satu Laras Turun (D G C F A D)',
+      tuningGuitarOpenG: 'Open G (D G D G B D)',
+      tuningGuitarOpenD: 'Open D (D A D F# A D)',
+      tuningGuitarStandard7: 'Standar 7-Senar (B E A D G B E)',
+      tuningBassStandard: 'Standar (E A D G)',
+      tuningBassDropD: 'Drop D (D A D G)',
+      tuningBassHalfStepDown: 'Setengah Laras Turun (Eb Ab Db Gb)',
+      tuningBassStandard5: 'Standar 5-Senar (B E A D G)',
+      tuningUkuleleStandardHighG: 'Standar High-G (G C E A)',
+      tuningUkuleleLowG: 'Low-G (G C E A)',
+      tuningUkuleleBaritone: 'Baritone (D G B E)'
+    }
+  };
+
+  function t(key, p0, p1, p2){
+    const dict = I18N[state.lang] || I18N.en;
+    let str = (Object.prototype.hasOwnProperty.call(dict,key) ? dict[key] : I18N.en[key]);
+    if(str === undefined) return key;
+    if(p0!==undefined) str = str.replace('{0}', p0);
+    if(p1!==undefined) str = str.replace('{1}', p1);
+    if(p2!==undefined) str = str.replace('{2}', p2);
+    return str;
+  }
+
+  /* =========================================================
      3. STATE (persisted locally — no login, no server)
   ========================================================= */
-  const DEFAULTS = { instrument:'guitar', tuning:'standard', mode:'auto', selectedString:null, a4:440, sensitivity:5, theme:'dark' };
+  const DEFAULTS = { instrument:'guitar', tuning:'standard', mode:'auto', selectedString:null, a4:440, sensitivity:5, theme:'dark', lang:'en' };
   let state = loadState();
 
   function loadState(){
@@ -717,33 +967,33 @@
   // Error with a specific reason on any malformed/unrecognized input.
   function decodeTuningFromCode(code){
     code = (code || '').trim();
-    if(!code) throw new Error('Kode kosong.');
-    if(code.indexOf(TUNING_CODE_PREFIX) !== 0) throw new Error('Format kode tidak dikenali.');
+    if(!code) throw new Error(t('codeEmpty'));
+    if(code.indexOf(TUNING_CODE_PREFIX) !== 0) throw new Error(t('codeUnrecognized'));
 
     let json;
     try{
       json = decodeURIComponent(escape(atob(code.slice(TUNING_CODE_PREFIX.length))));
     }catch(e){
-      throw new Error('Kode tidak valid atau rusak.');
+      throw new Error(t('codeInvalidCorrupt'));
     }
     let payload;
-    try{ payload = JSON.parse(json); }catch(e){ throw new Error('Kode tidak valid atau rusak.'); }
+    try{ payload = JSON.parse(json); }catch(e){ throw new Error(t('codeInvalidCorrupt')); }
 
-    if(!payload || typeof payload !== 'object') throw new Error('Kode tidak valid.');
-    if(!Object.prototype.hasOwnProperty.call(TUNINGS, payload.i)) throw new Error('Instrumen dalam kode tidak dikenali.');
-    if(typeof payload.l !== 'string' || !payload.l.trim()) throw new Error('Nama tuning tidak valid.');
+    if(!payload || typeof payload !== 'object') throw new Error(t('codeInvalid'));
+    if(!Object.prototype.hasOwnProperty.call(TUNINGS, payload.i)) throw new Error(t('codeUnknownInstrument'));
+    if(typeof payload.l !== 'string' || !payload.l.trim()) throw new Error(t('codeInvalidName'));
     if(!Array.isArray(payload.s) || payload.s.length === 0 || payload.s.length > MAX_CUSTOM_STRINGS){
-      throw new Error('Jumlah senar dalam kode tidak valid.');
+      throw new Error(t('codeInvalidStringCount'));
     }
 
     const strings = payload.s.map(function(arr){
-      if(!Array.isArray(arr) || arr.length !== 3) throw new Error('Data senar dalam kode tidak valid.');
+      if(!Array.isArray(arr) || arr.length !== 3) throw new Error(t('codeInvalidStringData'));
       const stringNum = arr[0], note = arr[1], octave = arr[2];
       if(typeof stringNum !== 'number' || stringNum < 1 || stringNum > MAX_CUSTOM_STRINGS){
-        throw new Error('Nomor senar dalam kode tidak valid.');
+        throw new Error(t('codeInvalidStringNumber'));
       }
-      if(NOTE_NAMES.indexOf(note) === -1) throw new Error('Nada tidak dikenali dalam kode: ' + note);
-      if(typeof octave !== 'number' || octave < 0 || octave > 8) throw new Error('Oktaf dalam kode tidak valid.');
+      if(NOTE_NAMES.indexOf(note) === -1) throw new Error(t('codeUnknownNote', note));
+      if(typeof octave !== 'number' || octave < 0 || octave > 8) throw new Error(t('codeInvalidOctave'));
       return { string: stringNum, note: note, octave: octave };
     });
 
@@ -1025,12 +1275,12 @@
     els.micBtn.disabled = true;
 
     if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
-      setStatus('Browser ini tidak mendukung akses mikrofon.', 'warn');
+      setStatus(t('micNotSupported'), 'warn');
       micStarting = false; els.micBtn.disabled = false;
       return;
     }
     if(!window.isSecureContext){
-      setStatus('Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.', 'warn');
+      setStatus(t('needHttps'), 'warn');
       micStarting = false; els.micBtn.disabled = false;
       return;
     }
@@ -1039,9 +1289,9 @@
         echoCancellation:false, noiseSuppression:false, autoGainControl:false, channelCount:1
       }});
     }catch(err){
-      let msg = 'Tidak dapat mengakses mikrofon.';
-      if(err && err.name==='NotAllowedError') msg = 'Akses mikrofon ditolak. Izinkan akses mikrofon di pengaturan browser, lalu coba lagi.';
-      else if(err && err.name==='NotFoundError') msg = 'Mikrofon tidak ditemukan. Pastikan perangkat memiliki mikrofon aktif.';
+      let msg = t('micGenericError');
+      if(err && err.name==='NotAllowedError') msg = t('micDenied');
+      else if(err && err.name==='NotFoundError') msg = t('micNotFound');
       setStatus(msg, 'warn');
       micStarting = false; els.micBtn.disabled = false;
       return;
@@ -1077,7 +1327,7 @@
     micStarting = false;
     els.micBtn.disabled = false;
     updateMicUI();
-    setStatus('Mendengarkan... petik salah satu senar', '');
+    setStatus(t('listening'), '');
     smooth.lastValidAt = performance.now();
     startDetectionTimer();
     requestAnimationFrame(renderLoop);
@@ -1110,7 +1360,7 @@
     if(lpFilter){ try{ lpFilter.disconnect(); }catch(e){} lpFilter=null; }
     if(analyser){ try{ analyser.disconnect(); }catch(e){} analyser=null; }
     updateMicUI();
-    setStatus('Tekan "Mulai Tuning" untuk mendengarkan', '');
+    setStatus(t('stoppedListening'), '');
     resetReadout();
     drawWaveform();
     releaseWakeLock();
@@ -1134,7 +1384,7 @@
     toneOsc.start(now);
     toneOsc.stop(now+1.8);
     toneSuppressUntil = performance.now() + 1900;
-    setStatus('🔊 Memutar nada referensi — pakai headphone agar mikrofon tidak ikut menangkapnya', '');
+    setStatus(t('playingReferenceTone'), '');
   }
 
   /* =========================================================
@@ -1260,7 +1510,7 @@
         els.readout.classList.add('idle');
         els.panel.classList.remove('glow');
         if(!els.statusLine.classList.contains('warn')){
-          setStatus('Petik beberapa atau semua senar, lalu tahan...', '');
+          setStatus(t('polyWaitingPrompt'), '');
         }
         els.noteName.textContent = '–';
         els.noteName.className = 'note-name';
@@ -1274,15 +1524,15 @@
     els.noteName.className = 'note-name ' + (inTuneCount===soundingCount ? 'state-green' : (inTuneCount>0 ? 'state-amber' : 'state-red'));
     els.freqVal.textContent = '';
     els.targetFreq.textContent = '';
-    els.centsVal.textContent = 'senar selaras';
+    els.centsVal.textContent = t('stringsInTuneLabel');
 
     if(inTuneCount === soundingCount){
-      setStatus('🎯 Semua senar yang dipetik sudah selaras!', 'success');
+      setStatus(t('polyAllInTune'), 'success');
       els.panel.classList.add('glow');
-      els.hintText.textContent = '🎯 Selaras!';
+      els.hintText.textContent = t('inTuneText');
       els.hintText.className = 'hint ok';
     } else {
-      setStatus(inTuneCount + ' dari ' + soundingCount + ' senar selaras — lihat warna tiap senar di bawah', '');
+      setStatus(t('polyPartial', inTuneCount, soundingCount), '');
       els.panel.classList.remove('glow');
       els.hintText.textContent = '';
     }
@@ -1333,6 +1583,8 @@
     readout: document.getElementById('readout'),
     panel: document.getElementById('tunerPanel'),
     themeBtn: document.getElementById('themeBtn'),
+    langBtn: document.getElementById('langBtn'),
+    micHintText: document.getElementById('micHintText'),
     settingsBtn: document.getElementById('settingsBtn'),
     closeSettings: document.getElementById('closeSettings'),
     settingsOverlay: document.getElementById('settingsOverlay'),
@@ -1387,7 +1639,7 @@
     smooth.inTuneSince = 0;
     liveTargetCents = 0;
     if(!els.statusLine.classList.contains('warn')){
-      setStatus('Menunggu... petik salah satu senar', '');
+      setStatus(t('listening'), '');
     }
   }
 
@@ -1396,7 +1648,7 @@
     els.noteName.className = 'note-name';
     els.freqVal.textContent = '0.0';
     els.targetFreq.textContent = '';
-    els.centsVal.textContent = '– cents';
+    els.centsVal.textContent = t('defaultCents');
     els.hintText.textContent = '';
     els.hintText.className = 'hint';
     els.levelBar.style.width = '0%';
@@ -1433,9 +1685,9 @@
       if(!smooth.inTuneSince) smooth.inTuneSince = now;
       const held = now - smooth.inTuneSince;
       if(held > 220){
-        els.hintText.textContent = '🎯 Selaras!';
+        els.hintText.textContent = t('inTuneText');
         els.hintText.className = 'hint ok';
-        setStatus('🎯 Senar ' + data.target.string + ' selaras', 'success');
+        setStatus(t('stringInTune', data.target.string), 'success');
         els.panel.classList.add('glow');
         if(!smooth.vibrated){
           if(navigator.vibrate) navigator.vibrate(60);
@@ -1450,12 +1702,12 @@
       smooth.vibrated = false;
       els.panel.classList.remove('glow');
       if(data.cents > 5){
-        els.hintText.textContent = '▼ Kendurkan sedikit (terlalu tinggi)';
+        els.hintText.textContent = t('tooHigh');
       } else {
-        els.hintText.textContent = '▲ Kencangkan sedikit (terlalu rendah)';
+        els.hintText.textContent = t('tooLow');
       }
       els.hintText.className = 'hint';
-      setStatus('Mendengarkan senar ' + data.target.string + ' (' + data.target.note + data.target.octave + ')', '');
+      setStatus(t('listeningToString', data.target.string, data.target.note, data.target.octave), '');
     }
 
     document.querySelectorAll('.peg').forEach(function(p){
@@ -1475,10 +1727,10 @@
     const custom = customTunings[state.instrument] || {};
 
     const gBuilt = document.createElement('optgroup');
-    gBuilt.label = 'Bawaan';
+    gBuilt.label = t('tuningGroupBuiltIn');
     Object.keys(builtIn).forEach(function(key){
       const opt = document.createElement('option');
-      opt.value = key; opt.textContent = builtIn[key].label;
+      opt.value = key; opt.textContent = t(builtIn[key].labelKey);
       if(key===state.tuning) opt.selected = true;
       gBuilt.appendChild(opt);
     });
@@ -1487,7 +1739,7 @@
     const customKeys = Object.keys(custom);
     if(customKeys.length){
       const gCustom = document.createElement('optgroup');
-      gCustom.label = 'Kustom';
+      gCustom.label = t('tuningGroupCustom');
       customKeys.forEach(function(key){
         const opt = document.createElement('option');
         opt.value = key; opt.textContent = custom[key].label;
@@ -1515,13 +1767,13 @@
       peg.dataset.string = s.string;
       peg.setAttribute('role','button');
       peg.setAttribute('tabindex','0');
-      peg.setAttribute('aria-label', 'Pilih senar ' + s.string + ', nada ' + s.note + s.octave);
+      peg.setAttribute('aria-label', t('selectStringAria', s.string, s.note + s.octave));
 
       const playBtn = document.createElement('button');
       playBtn.className = 'peg-play';
       playBtn.type = 'button';
       playBtn.textContent = '🔊';
-      playBtn.setAttribute('aria-label', 'Dengarkan nada referensi ' + s.note + s.octave);
+      playBtn.setAttribute('aria-label', t('playReferenceToneAria', s.note + s.octave));
       playBtn.addEventListener('click', function(e){
         e.stopPropagation();
         playReferenceTone(s.freq);
@@ -1533,7 +1785,7 @@
 
       const labelEl = document.createElement('div');
       labelEl.className = 'peg-label';
-      labelEl.textContent = 'Senar ' + s.string;
+      labelEl.textContent = t('stringLabel', s.string);
 
       const centsEl = document.createElement('div');
       centsEl.className = 'peg-cents';
@@ -1603,7 +1855,7 @@
 
   function updateMicUI(){
     els.micBtn.classList.toggle('active', micActive);
-    els.micBtnLabel.textContent = micActive ? 'Berhenti' : 'Mulai Tuning';
+    els.micBtnLabel.textContent = micActive ? t('stopTuning') : t('startTuning');
   }
 
   function toggleSettings(open){
@@ -1635,9 +1887,42 @@
     document.documentElement.setAttribute('data-theme', state.theme);
     const light = state.theme === 'light';
     els.themeBtn.textContent = light ? '🌙' : '☀️';
-    els.themeBtn.setAttribute('aria-label', light ? 'Ganti ke tema gelap' : 'Ganti ke tema terang');
+    els.themeBtn.setAttribute('aria-label', light ? t('themeToDark') : t('themeToLight'));
     applyThemeSvgColors();
     drawWaveform();
+  }
+
+  /* =========================================================
+     10b. LANGUAGE
+  ========================================================= */
+  function applyTranslations(){
+    document.documentElement.setAttribute('lang', state.lang);
+    document.title = t('appTitle') + ' — ' + t('appSubtitle').split(' — ')[0];
+
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+      el.setAttribute('aria-label', t(el.dataset.i18nAria));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+      el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder));
+    });
+
+    els.micHintText.innerHTML = t('micShortcutHint', '<kbd>' + t('spaceKeyLabel') + '</kbd>');
+    els.langBtn.textContent = state.lang === 'en' ? 'ID' : 'EN';
+    els.langBtn.setAttribute('aria-label', t('switchLanguage'));
+    applyTheme(); // re-applies the theme button's aria-label in the new language
+
+    // Re-render anything built dynamically with translated text
+    renderTuningOptions();
+    renderStringPegs();
+    // Only refresh the idle default status text — an active/live status
+    // message will be overwritten by the next detection tick anyway, and
+    // overwriting a warning message here could clobber a real error.
+    if(!micActive && !els.statusLine.classList.contains('warn')){
+      setStatus(t('defaultStatus'), '');
+    }
   }
 
   /* =========================================================
@@ -1698,7 +1983,7 @@
     rows.forEach(function(row, idx){
       const stringNum = total - idx;
       row.dataset.string = stringNum;
-      row.querySelector('.cte-label').textContent = 'Senar ' + stringNum;
+      row.querySelector('.cte-label').textContent = t('stringLabel', stringNum);
       row.querySelector('.cte-remove').disabled = (total <= 1);
     });
     els.addStringRowBtn.disabled = (total >= MAX_CUSTOM_STRINGS);
@@ -1730,7 +2015,7 @@
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.className = 'cte-remove';
-    removeBtn.setAttribute('aria-label','Hapus senar ini');
+    removeBtn.setAttribute('aria-label', t('removeThisString'));
     removeBtn.textContent = '✕';
 
     function updateFreq(){
@@ -1794,7 +2079,7 @@
   function saveTuningEditor(){
     const name = els.tuningEditorName.value.trim();
     if(!name){
-      els.tuningEditorWarning.textContent = 'Beri nama untuk tuning ini.';
+      els.tuningEditorWarning.textContent = t('giveTuningAName');
       return;
     }
     const rows = els.tuningEditorRows.querySelectorAll('.cte-row');
@@ -1824,7 +2109,7 @@
   function deleteCurrentTuning(){
     if(!isCustomTuning(state.instrument, state.tuning)) return;
     const label = getAllTunings(state.instrument)[state.tuning].label;
-    if(!window.confirm('Hapus tuning kustom "' + label + '"?')) return;
+    if(!window.confirm(t('confirmDeleteTuning', label))) return;
     delete customTunings[state.instrument][state.tuning];
     saveCustomTunings();
     state.tuning = Object.keys(TUNINGS[state.instrument])[0];
@@ -1881,7 +2166,7 @@
       resetReadout();
       els.panel.classList.toggle('mode-poly', state.mode==='poly');
       if(state.mode==='poly'){
-        setStatus('Petik beberapa atau semua senar, lalu tahan...', '');
+        setStatus(t('polyWaitingPrompt'), '');
       }
       if(micActive && (state.mode==='poly' || previousMode==='poly')){
         applyInstrumentConfig();
@@ -1915,6 +2200,12 @@
     applyTheme();
   });
 
+  els.langBtn.addEventListener('click', function(){
+    state.lang = state.lang==='en' ? 'id' : 'en';
+    saveState();
+    applyTranslations();
+  });
+
   els.addTuningBtn.addEventListener('click', openTuningEditor);
   els.closeTuningEditor.addEventListener('click', closeTuningEditorFn);
   els.tuningEditorCancel.addEventListener('click', closeTuningEditorFn);
@@ -1929,7 +2220,7 @@
     try{
       decoded = decodeTuningFromCode(els.tuningEditorImportCode.value);
     }catch(err){
-      els.tuningEditorWarning.textContent = err.message || 'Kode tidak valid.';
+      els.tuningEditorWarning.textContent = err.message || t('codeInvalid');
       return;
     }
     if(decoded.instrument !== state.instrument){
@@ -1955,7 +2246,7 @@
     resetReadout();
     if(micActive) applyInstrumentConfig();
     closeTuningEditorFn();
-    setStatus('Tuning "' + decoded.label + '" berhasil diimport.', 'success');
+    setStatus(t('tuningImported', decoded.label), 'success');
   });
 
   els.exportTuningBtn.addEventListener('click', async function(){
@@ -1963,7 +2254,7 @@
     const preset = getAllTunings(state.instrument)[state.tuning];
     const code = encodeTuningToCode(state.instrument, preset);
     if(!code){
-      setStatus('Gagal membuat kode export.', 'warn');
+      setStatus(t('exportFailed'), 'warn');
       return;
     }
     let copied = false;
@@ -1971,9 +2262,9 @@
       try{ await navigator.clipboard.writeText(code); copied = true; }catch(e){ copied = false; }
     }
     if(copied){
-      setStatus('✅ Kode tuning disalin ke clipboard — bagikan ke teman!', 'success');
+      setStatus(t('exportSuccess'), 'success');
     } else {
-      window.prompt('Salin kode tuning ini:', code);
+      window.prompt(t('copyThisCode'), code);
     }
   });
 
@@ -2014,11 +2305,11 @@
 
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
     if(deferredInstallPrompt){
-      els.installBannerText.textContent = 'Install Tuner Senar sebagai aplikasi untuk akses lebih cepat & bisa offline';
+      els.installBannerText.textContent = t('installBannerText');
       els.installBtn.style.display = '';
       els.installBanner.style.display = 'flex';
     } else if(isIOS){
-      els.installBannerText.textContent = 'Di iPhone: ketuk tombol Share lalu "Add to Home Screen" untuk install';
+      els.installBannerText.textContent = t('installBannerIOS');
       els.installBtn.style.display = 'none';
       els.installBanner.style.display = 'flex';
     }
@@ -2060,9 +2351,7 @@
      15. INIT
   ========================================================= */
   function init(){
-    applyTheme();
-    renderTuningOptions();
-    renderStringPegs();
+    applyTranslations();
     updateModeUI();
     updateTabUnderlinePosition();
     els.a4Range.value = state.a4; els.a4Val.textContent = state.a4+' Hz';
@@ -2073,12 +2362,12 @@
     els.panel.classList.toggle('mode-poly', state.mode==='poly');
 
     if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
-      setStatus('Browser ini tidak mendukung akses mikrofon.', 'warn');
+      setStatus(t('micNotSupported'), 'warn');
       els.micBtn.disabled = true;
     } else if(!window.isSecureContext){
-      setStatus('Buka halaman ini lewat HTTPS atau localhost agar mikrofon dapat diakses.', 'warn');
+      setStatus(t('needHttps'), 'warn');
     } else if(state.mode==='poly'){
-      setStatus('Petik beberapa atau semua senar, lalu tahan...', '');
+      setStatus(t('polyWaitingPrompt'), '');
     }
 
     window.addEventListener('resize', function(){

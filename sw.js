@@ -2,7 +2,7 @@
 // Strategy: stale-while-revalidate (serve instantly from cache, refresh cache
 // in the background from the network so updates are picked up next time).
 
-const CACHE_VERSION = 'tuner-senar-v3';
+const CACHE_VERSION = 'tuner-senar-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -10,7 +10,8 @@ const APP_SHELL = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-192.png',
-  './icons/icon-maskable-512.png'
+  './icons/icon-maskable-512.png',
+  './icons/og-preview.png'
 ];
 
 self.addEventListener('install', function(event){
