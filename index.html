@@ -340,6 +340,9 @@
   .privacy-note{font-size:.68rem; color:var(--muted); text-align:center; line-height:1.55; padding:0 8px;}
   .tips-note{font-size:.68rem; color:var(--brass-dim); text-align:center; line-height:1.55; padding:0 8px; margin-top:-6px;}
   .foot{font-size:.62rem; color:var(--brass-dim); text-align:center; padding-top:2px; letter-spacing:.02em;}
+  .foot-links{display:flex; gap:16px; justify-content:center; font-size:.68rem; margin-top:2px;}
+  .foot-links a{color:var(--brass-dim); text-decoration:none;}
+  .foot-links a:hover{color:var(--brass);}
 
   /* ---------- Modals (settings + tuning editor) ---------- */
   .modal-overlay{
@@ -526,6 +529,10 @@
   <p class="tips-note" data-i18n="tipsNote">Tips: pilih instrumen &amp; setelan di atas, izinkan mikrofon, lalu petik senar satu per satu di ruangan yang tidak terlalu berisik.</p>
 
   <footer class="foot"><span data-i18n="footerText">Deteksi pitch dengan algoritma autocorrelation (McLeod Pitch Method) — 100% berjalan di perangkat Anda.</span><br><span data-i18n="copyrightText">© 2026 GANTI_DENGAN_NAMA_ANDA. Hak cipta dilindungi.</span></footer>
+  <div class="foot-links">
+    <a href="./about.html" data-i18n="footerAboutLink">Tentang</a>
+    <a href="./privacy.html" data-i18n="footerPrivacyLink">Kebijakan Privasi</a>
+  </div>
 </div>
 
 <div class="modal-overlay" id="settingsOverlay">
@@ -778,7 +785,9 @@
       tuningBassStandard5: 'Standard 5-String (B E A D G)',
       tuningUkuleleStandardHighG: 'Standard High-G (G C E A)',
       tuningUkuleleLowG: 'Low-G (G C E A)',
-      tuningUkuleleBaritone: 'Baritone (D G B E)'
+      tuningUkuleleBaritone: 'Baritone (D G B E)',
+      footerAboutLink: 'About',
+      footerPrivacyLink: 'Privacy Policy'
     },
     id: {
       appTitle: 'Tuner Senar',
@@ -888,7 +897,9 @@
       tuningBassStandard5: 'Standar 5-Senar (B E A D G)',
       tuningUkuleleStandardHighG: 'Standar High-G (G C E A)',
       tuningUkuleleLowG: 'Low-G (G C E A)',
-      tuningUkuleleBaritone: 'Baritone (D G B E)'
+      tuningUkuleleBaritone: 'Baritone (D G B E)',
+      footerAboutLink: 'Tentang',
+      footerPrivacyLink: 'Kebijakan Privasi'
     }
   };
 

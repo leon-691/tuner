@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--
+  String Tuner — Privacy Policy
+  © 2026 REPLACE_WITH_YOUR_NAME. All rights reserved.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="Privacy Policy for String Tuner — no accounts, no tracking, no audio ever leaves your device.">
+<title>Privacy Policy — String Tuner</title>
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#141110">
+<style>
+  :root{
+    --bg-deep:#141110; --bg-panel:#1F1A15; --bg-panel-2:#241E17;
+    --wood-border:#3B2E22; --wood-border-soft:#2C2219;
+    --brass:#C6A15B; --brass-bright:#E8CE95; --brass-dim:#8A7148;
+    --cream:#F3E8D6; --muted:#9C9284; --green:#6FBE7A;
+    --shadow: rgba(0,0,0,.55); --grad1:#2a2115; --grad2:#1a140d;
+    --texture-line: rgba(255,255,255,.012);
+    --radius-sm:7px; --radius-md:12px; --radius-lg:20px;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  [data-theme="light"]{
+    --bg-deep:#EDE4D3; --bg-panel:#F7F1E4; --bg-panel-2:#EFE6D4;
+    --wood-border:#C9B896; --wood-border-soft:#DCD0B8;
+    --brass:#9C7A3C; --brass-bright:#7A5D28; --brass-dim:#8A6B35;
+    --cream:#2B2318; --muted:#6B6152; --green:#2F7A3D;
+    --shadow: rgba(80,60,30,.18); --grad1:#FFF8E8; --grad2:#E8DCC0;
+    --texture-line: rgba(90,70,40,.035);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, var(--grad1) 0%, transparent 60%),
+      radial-gradient(ellipse 1200px 800px at 50% 110%, var(--grad2) 0%, transparent 60%),
+      var(--bg-deep);
+    color:var(--cream); font-family:var(--sans); -webkit-font-smoothing:antialiased;
+    display:flex; justify-content:center; padding:28px 16px 56px;
+  }
+  body::before{
+    content:""; position:fixed; inset:0;
+    background-image:repeating-linear-gradient(115deg, var(--texture-line) 0px, var(--texture-line) 1px, transparent 1px, transparent 5px);
+    pointer-events:none;
+  }
+  .wrap{width:100%; max-width:640px; display:flex; flex-direction:column; gap:18px; position:relative; z-index:1;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+  .brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit;}
+  .brand-mark{
+    width:40px; height:40px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass) 60%, var(--brass-dim) 100%);
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:var(--bg-deep); font-weight:700;
+    box-shadow:0 3px 10px -2px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.4); flex-shrink:0;
+  }
+  .brand-text h1{font-family:var(--mono); font-size:1rem; font-weight:700; letter-spacing:.02em; color:var(--brass-bright); margin:0;}
+  .topbar-actions{display:flex; gap:8px;}
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; background:var(--bg-panel); border:1px solid var(--wood-border);
+    color:var(--brass); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:border-color .2s, color .2s; font-family:var(--mono); font-weight:700; font-size:.72rem;
+  }
+  .icon-btn:hover{border-color:var(--brass); color:var(--brass-bright);}
+  .panel{
+    background:var(--bg-panel); border:1px solid var(--wood-border); border-radius:var(--radius-lg);
+    padding:32px 28px; box-shadow:0 24px 48px -22px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  h2{font-family:var(--mono); color:var(--brass-bright); font-size:1.3rem; margin:0 0 6px;}
+  .tagline{color:var(--muted); font-size:.8rem; margin:0 0 28px;}
+  h3{font-family:var(--mono); color:var(--brass); font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; margin:26px 0 10px;}
+  h3:first-of-type{margin-top:0;}
+  p{line-height:1.65; font-size:.92rem; color:var(--cream); margin:0 0 14px;}
+  ul{margin:0 0 14px; padding-left:20px;}
+  li{line-height:1.6; font-size:.92rem; color:var(--cream); margin-bottom:6px;}
+  .summary-box{
+    background:var(--bg-panel-2); border:1px solid var(--green); border-radius:var(--radius-md);
+    padding:16px 18px; margin-bottom:8px; font-size:.88rem; line-height:1.6;
+  }
+  .summary-box b{color:var(--green);}
+  .disclaimer{font-size:.76rem; color:var(--muted); font-style:italic; border-top:1px solid var(--wood-border-soft); padding-top:14px; margin-top:22px;}
+  .back-link{display:inline-flex; align-items:center; gap:6px; margin-top:8px; color:var(--brass); text-decoration:none; font-size:.85rem; font-weight:600;}
+  .back-link:hover{color:var(--brass-bright);}
+  .foot-links{display:flex; gap:16px; justify-content:center; font-size:.75rem; margin-top:4px;}
+  .foot-links a{color:var(--brass-dim); text-decoration:none;}
+  .foot-links a:hover{color:var(--brass);}
+  .lang-en, .lang-id{display:none;}
+  html[lang="en"] .lang-en{display:block;}
+  html[lang="id"] .lang-id{display:block;}
+  html[lang="en"] span.lang-en, html[lang="id"] span.lang-id{display:inline;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="./index.html">
+      <div class="brand-mark" aria-hidden="true">♪</div>
+      <div class="brand-text"><h1>String Tuner</h1></div>
+    </a>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="langBtn">ID</button>
+      <button class="icon-btn" id="themeBtn">☀️</button>
+    </div>
+  </header>
+
+  <main class="panel">
+    <div class="lang-en">
+      <h2>Privacy Policy</h2>
+      <p class="tagline">Last updated: 2026</p>
+
+      <div class="summary-box"><b>In short:</b> String Tuner has no account system, no analytics, no cookies, no third-party scripts, and no server. Nothing about your use of this app is collected, stored on a server, or transmitted anywhere. Everything described below happens only inside your own browser, on your own device.</div>
+
+      <h3>Microphone access</h3>
+      <p>The app asks for microphone access so it can listen to the note you play and detect its pitch. That audio is analyzed in real time using your browser's Web Audio API and is never recorded, saved to a file, or sent anywhere — including to us. Once you close the tab or press Stop, the audio is gone; nothing persists.</p>
+
+      <h3>What is stored, and where</h3>
+      <p>The app saves a few small preferences using your browser's local storage (<code>localStorage</code>), so they're remembered the next time you visit:</p>
+      <ul>
+        <li>Your selected instrument, tuning, and detection mode</li>
+        <li>Any custom tunings you build and choose to save</li>
+        <li>Calibration (A4 reference) and microphone sensitivity settings</li>
+        <li>Your language and theme (light/dark) choice</li>
+      </ul>
+      <p>This data lives only in your browser, on your device. It is never transmitted to a server — there isn't one. Clearing your browser data, or using a different browser or device, will remove or not include it.</p>
+
+      <h3>No accounts, no tracking</h3>
+      <p>There is no sign-up, no login, and no personal information (name, email, etc.) is ever requested or collected. The app does not use cookies, analytics services, advertising networks, or any third-party scripts. There are no ads.</p>
+
+      <h3>Children's privacy</h3>
+      <p>Because the app doesn't collect any data from anyone, this applies equally regardless of the user's age.</p>
+
+      <h3>Changes to this policy</h3>
+      <p>If this policy ever changes — for example, if a future version adds an optional feature that does involve a server — this page will be updated to describe it accurately before that feature is enabled.</p>
+
+      <h3>Contact</h3>
+      <p>Questions about this policy can be sent to: <b>REPLACE_WITH_YOUR_CONTACT_EMAIL</b></p>
+
+      <p class="disclaimer">This page describes what the application's code actually does, to the best of our knowledge, as a plain-language reference — it is not legal advice. If you need this to formally satisfy a specific regulation (e.g. GDPR, CCPA) for your jurisdiction or use case, have it reviewed by a qualified professional.</p>
+
+      <a class="back-link" href="./index.html">← Back to the tuner</a>
+    </div>
+
+    <div class="lang-id">
+      <h2>Kebijakan Privasi</h2>
+      <p class="tagline">Terakhir diperbarui: 2026</p>
+
+      <div class="summary-box"><b>Singkatnya:</b> Tuner Senar tidak punya sistem akun, tidak ada analitik, tidak ada cookie, tidak ada script pihak ketiga, dan tidak ada server. Tidak ada apa pun dari pemakaian Anda yang dikumpulkan, disimpan di server, atau dikirim ke mana pun. Semua yang dijelaskan di bawah ini terjadi hanya di dalam browser Anda sendiri, di perangkat Anda sendiri.</div>
+
+      <h3>Akses mikrofon</h3>
+      <p>Aplikasi ini meminta akses mikrofon supaya bisa mendengarkan nada yang Anda mainkan dan mendeteksi pitch-nya. Audio itu dianalisis secara real-time memakai Web Audio API browser Anda dan tidak pernah direkam, disimpan sebagai file, atau dikirim ke mana pun — termasuk ke kami. Begitu Anda menutup tab atau menekan Berhenti, audio tersebut hilang; tidak ada yang tersimpan.</p>
+
+      <h3>Apa yang disimpan, dan di mana</h3>
+      <p>Aplikasi ini menyimpan beberapa preferensi kecil memakai local storage browser Anda (<code>localStorage</code>), supaya diingat saat Anda kunjungi lagi:</p>
+      <ul>
+        <li>Instrumen, tuning, dan mode deteksi yang Anda pilih</li>
+        <li>Tuning kustom apa pun yang Anda buat dan simpan</li>
+        <li>Pengaturan kalibrasi (referensi A4) dan sensitivitas mikrofon</li>
+        <li>Pilihan bahasa dan tema (terang/gelap) Anda</li>
+      </ul>
+      <p>Data ini hanya ada di browser Anda, di perangkat Anda. Tidak pernah dikirim ke server — memang tidak ada server-nya. Menghapus data browser, atau memakai browser/perangkat lain, akan menghilangkan atau tidak menyertakan data ini.</p>
+
+      <h3>Tanpa akun, tanpa pelacakan</h3>
+      <p>Tidak ada pendaftaran, tidak ada login, dan tidak ada informasi pribadi (nama, email, dst.) yang pernah diminta atau dikumpulkan. Aplikasi ini tidak memakai cookie, layanan analitik, jaringan iklan, atau script pihak ketiga apa pun. Tidak ada iklan.</p>
+
+      <h3>Privasi anak</h3>
+      <p>Karena aplikasi ini tidak mengumpulkan data dari siapa pun, hal ini berlaku sama rata terlepas dari usia penggunanya.</p>
+
+      <h3>Perubahan kebijakan ini</h3>
+      <p>Jika kebijakan ini berubah — misalnya, jika versi mendatang menambah fitur opsional yang melibatkan server — halaman ini akan diperbarui untuk menjelaskannya secara akurat sebelum fitur itu diaktifkan.</p>
+
+      <h3>Kontak</h3>
+      <p>Pertanyaan soal kebijakan ini bisa dikirim ke: <b>GANTI_DENGAN_EMAIL_KONTAK_ANDA</b></p>
+
+      <p class="disclaimer">Halaman ini menjelaskan apa yang benar-benar dilakukan kode aplikasi ini, sejauh yang kami ketahui, sebagai referensi berbahasa sederhana — ini bukan nasihat hukum. Kalau Anda butuh ini memenuhi regulasi tertentu secara formal (mis. GDPR, CCPA) untuk yurisdiksi atau kebutuhan Anda, mintalah ditinjau oleh profesional yang berkompeten.</p>
+
+      <a class="back-link" href="./index.html">← Kembali ke tuner</a>
+    </div>
+  </main>
+
+  <div class="foot-links">
+    <a href="./index.html">
+      <span class="lang-en">Tuner</span><span class="lang-id">Tuner</span>
+    </a>
+    <a href="./about.html">
+      <span class="lang-en">About</span><span class="lang-id">Tentang</span>
+    </a>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var STATE_KEY = 'guitarTunerState_v1';
+
+  function loadShared(){
+    try{
+      var raw = localStorage.getItem(STATE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  function saveShared(patch){
+    try{
+      var cur = loadShared();
+      localStorage.setItem(STATE_KEY, JSON.stringify(Object.assign({}, cur, patch)));
+    }catch(e){}
+  }
+
+  var state = loadShared();
+  var theme = state.theme === 'light' ? 'light' : 'dark';
+  var lang = state.lang === 'id' ? 'id' : 'en';
+
+  var themeBtn = document.getElementById('themeBtn');
+  var langBtn = document.getElementById('langBtn');
+
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtn.textContent = theme==='light' ? '🌙' : '☀️';
+  }
+  function applyLang(){
+    document.documentElement.setAttribute('lang', lang);
+    langBtn.textContent = lang==='en' ? 'ID' : 'EN';
+  }
+
+  themeBtn.addEventListener('click', function(){
+    theme = theme==='light' ? 'dark' : 'light';
+    saveShared({ theme: theme });
+    applyTheme();
+  });
+  langBtn.addEventListener('click', function(){
+    lang = lang==='en' ? 'id' : 'en';
+    saveShared({ lang: lang });
+    applyLang();
+  });
+
+  applyTheme();
+  applyLang();
+})();
+</script>
+</body>
+</html>

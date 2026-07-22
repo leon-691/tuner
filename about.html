@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--
+  String Tuner — About page
+  © 2026 REPLACE_WITH_YOUR_NAME. All rights reserved.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="About String Tuner — an accurate, private, browser-based guitar, bass, and ukulele tuner.">
+<title>About — String Tuner</title>
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#141110">
+<style>
+  :root{
+    --bg-deep:#141110; --bg-panel:#1F1A15; --bg-panel-2:#241E17;
+    --wood-border:#3B2E22; --wood-border-soft:#2C2219;
+    --brass:#C6A15B; --brass-bright:#E8CE95; --brass-dim:#8A7148;
+    --cream:#F3E8D6; --muted:#9C9284; --green:#6FBE7A;
+    --shadow: rgba(0,0,0,.55); --grad1:#2a2115; --grad2:#1a140d;
+    --texture-line: rgba(255,255,255,.012);
+    --radius-sm:7px; --radius-md:12px; --radius-lg:20px;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  [data-theme="light"]{
+    --bg-deep:#EDE4D3; --bg-panel:#F7F1E4; --bg-panel-2:#EFE6D4;
+    --wood-border:#C9B896; --wood-border-soft:#DCD0B8;
+    --brass:#9C7A3C; --brass-bright:#7A5D28; --brass-dim:#8A6B35;
+    --cream:#2B2318; --muted:#6B6152; --green:#2F7A3D;
+    --shadow: rgba(80,60,30,.18); --grad1:#FFF8E8; --grad2:#E8DCC0;
+    --texture-line: rgba(90,70,40,.035);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, var(--grad1) 0%, transparent 60%),
+      radial-gradient(ellipse 1200px 800px at 50% 110%, var(--grad2) 0%, transparent 60%),
+      var(--bg-deep);
+    color:var(--cream); font-family:var(--sans); -webkit-font-smoothing:antialiased;
+    display:flex; justify-content:center; padding:28px 16px 56px;
+  }
+  body::before{
+    content:""; position:fixed; inset:0;
+    background-image:repeating-linear-gradient(115deg, var(--texture-line) 0px, var(--texture-line) 1px, transparent 1px, transparent 5px);
+    pointer-events:none;
+  }
+  .wrap{width:100%; max-width:640px; display:flex; flex-direction:column; gap:18px; position:relative; z-index:1;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+  .brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit;}
+  .brand-mark{
+    width:40px; height:40px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass) 60%, var(--brass-dim) 100%);
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:var(--bg-deep); font-weight:700;
+    box-shadow:0 3px 10px -2px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.4); flex-shrink:0;
+  }
+  .brand-text h1{font-family:var(--mono); font-size:1rem; font-weight:700; letter-spacing:.02em; color:var(--brass-bright); margin:0;}
+  .topbar-actions{display:flex; gap:8px;}
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; background:var(--bg-panel); border:1px solid var(--wood-border);
+    color:var(--brass); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:border-color .2s, color .2s; font-family:var(--mono); font-weight:700; font-size:.72rem;
+  }
+  .icon-btn:hover{border-color:var(--brass); color:var(--brass-bright);}
+  .panel{
+    background:var(--bg-panel); border:1px solid var(--wood-border); border-radius:var(--radius-lg);
+    padding:32px 28px; box-shadow:0 24px 48px -22px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  h2{font-family:var(--mono); color:var(--brass-bright); font-size:1.3rem; margin:0 0 6px;}
+  .tagline{color:var(--muted); font-size:.85rem; margin:0 0 28px;}
+  h3{font-family:var(--mono); color:var(--brass); font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; margin:28px 0 10px;}
+  h3:first-of-type{margin-top:0;}
+  p{line-height:1.65; font-size:.92rem; color:var(--cream); margin:0 0 14px;}
+  ul{margin:0 0 14px; padding-left:20px;}
+  li{line-height:1.6; font-size:.92rem; color:var(--cream); margin-bottom:6px;}
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+    color:var(--brass); text-decoration:none; font-size:.85rem; font-weight:600;
+  }
+  .back-link:hover{color:var(--brass-bright);}
+  .foot-links{display:flex; gap:16px; justify-content:center; font-size:.75rem; margin-top:4px;}
+  .foot-links a{color:var(--brass-dim); text-decoration:none;}
+  .foot-links a:hover{color:var(--brass);}
+  .lang-en, .lang-id{display:none;}
+  html[lang="en"] .lang-en{display:block;}
+  html[lang="id"] .lang-id{display:block;}
+  html[lang="en"] span.lang-en, html[lang="id"] span.lang-id{display:inline;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="./index.html">
+      <div class="brand-mark" aria-hidden="true">♪</div>
+      <div class="brand-text"><h1>String Tuner</h1></div>
+    </a>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="langBtn">ID</button>
+      <button class="icon-btn" id="themeBtn">☀️</button>
+    </div>
+  </header>
+
+  <main class="panel">
+    <div class="lang-en">
+      <h2>About String Tuner</h2>
+      <p class="tagline">An accurate, private guitar, bass, and ukulele tuner that runs entirely in your browser.</p>
+
+      <h3>What it is</h3>
+      <p>String Tuner is a free chromatic tuner for guitar (6 &amp; 7-string), bass (4 &amp; 5-string), and ukulele. It listens through your device's microphone and tells you, in real time, how close each string is to the correct pitch.</p>
+
+      <h3>How the detection works</h3>
+      <p>Single-string tuning uses the <b>McLeod Pitch Method</b>, an autocorrelation-based algorithm that's resistant to octave errors and background noise. Poly mode (strum several strings at once) uses FFT-based peak detection with sub-bin interpolation, so it can tell closely-spaced strings apart accurately. Both run entirely inside your browser using the Web Audio API — nothing is sent anywhere for processing.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li>Guitar, bass, and ukulele, including 7-string guitar and 5-string bass</li>
+        <li>Common alternate tunings (Drop D, Open G, Open D, half/full step down, and more)</li>
+        <li>Build and save your own custom tuning, with a shareable code to send to friends</li>
+        <li>Automatic, Manual, and Polyphonic detection modes</li>
+        <li>Installable as an app, and works offline once installed</li>
+        <li>Dark and light themes, English and Indonesian</li>
+      </ul>
+
+      <h3>Why it's free and private</h3>
+      <p>There's no account, no ads, and no tracking. See the <a class="back-link" style="display:inline" href="./privacy.html">Privacy Policy</a> for the full detail on what data the app handles (in short: none of it leaves your device).</p>
+
+      <a class="back-link" href="./index.html">← Back to the tuner</a>
+    </div>
+
+    <div class="lang-id">
+      <h2>Tentang Tuner Senar</h2>
+      <p class="tagline">Tuner gitar, bass, dan ukulele yang akurat dan privat, berjalan sepenuhnya di browser Anda.</p>
+
+      <h3>Apa ini</h3>
+      <p>Tuner Senar adalah tuner kromatik gratis untuk gitar (6 &amp; 7 senar), bass (4 &amp; 5 senar), dan ukulele. Aplikasi ini mendengarkan lewat mikrofon perangkat Anda dan menunjukkan, secara real-time, seberapa dekat tiap senar dengan nada yang benar.</p>
+
+      <h3>Cara kerja deteksinya</h3>
+      <p>Tuning satu senar memakai <b>McLeod Pitch Method</b>, algoritma berbasis autocorrelation yang tahan terhadap salah oktaf dan noise latar. Mode Poly (genjreng beberapa senar sekaligus) memakai deteksi puncak berbasis FFT dengan interpolasi sub-bin, sehingga bisa membedakan senar yang berdekatan dengan akurat. Keduanya berjalan sepenuhnya di browser Anda memakai Web Audio API — tidak ada yang dikirim ke mana pun untuk diproses.</p>
+
+      <h3>Fitur</h3>
+      <ul>
+        <li>Gitar, bass, dan ukulele, termasuk gitar 7-senar dan bass 5-senar</li>
+        <li>Setelan alternatif umum (Drop D, Open G, Open D, setengah/satu laras turun, dan lainnya)</li>
+        <li>Buat dan simpan tuning kustom sendiri, dengan kode yang bisa dibagikan ke teman</li>
+        <li>Mode deteksi Otomatis, Manual, dan Polifonik</li>
+        <li>Bisa diinstall sebagai aplikasi, dan tetap jalan meski offline setelah diinstall</li>
+        <li>Tema gelap &amp; terang, Bahasa Indonesia &amp; Inggris</li>
+      </ul>
+
+      <h3>Kenapa gratis dan privat</h3>
+      <p>Tidak ada akun, tidak ada iklan, dan tidak ada pelacakan. Lihat <a class="back-link" style="display:inline" href="./privacy.html">Kebijakan Privasi</a> untuk detail lengkap soal data apa yang ditangani aplikasi ini (singkatnya: tidak ada yang keluar dari perangkat Anda).</p>
+
+      <a class="back-link" href="./index.html">← Kembali ke tuner</a>
+    </div>
+  </main>
+
+  <div class="foot-links">
+    <a href="./index.html" class="lang-en" style="display:inline">Tuner</a>
+    <a href="./index.html" class="lang-id" style="display:inline">Tuner</a>
+    <a href="./privacy.html">
+      <span class="lang-en">Privacy Policy</span><span class="lang-id">Kebijakan Privasi</span>
+    </a>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var STATE_KEY = 'guitarTunerState_v1';
+
+  function loadShared(){
+    try{
+      var raw = localStorage.getItem(STATE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  function saveShared(patch){
+    try{
+      var cur = loadShared();
+      localStorage.setItem(STATE_KEY, JSON.stringify(Object.assign({}, cur, patch)));
+    }catch(e){}
+  }
+
+  var state = loadShared();
+  var theme = state.theme === 'light' ? 'light' : 'dark';
+  var lang = state.lang === 'id' ? 'id' : 'en';
+
+  var themeBtn = document.getElementById('themeBtn');
+  var langBtn = document.getElementById('langBtn');
+
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtn.textContent = theme==='light' ? '🌙' : '☀️';
+  }
+  function applyLang(){
+    document.documentElement.setAttribute('lang', lang);
+    langBtn.textContent = lang==='en' ? 'ID' : 'EN';
+  }
+
+  themeBtn.addEventListener('click', function(){
+    theme = theme==='light' ? 'dark' : 'light';
+    saveShared({ theme: theme });
+    applyTheme();
+  });
+  langBtn.addEventListener('click', function(){
+    lang = lang==='en' ? 'id' : 'en';
+    saveShared({ lang: lang });
+    applyLang();
+  });
+
+  applyTheme();
+  applyLang();
+})();
+</script>
+</body>
+</html>
