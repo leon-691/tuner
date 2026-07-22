@@ -2,7 +2,7 @@
 // Strategy: stale-while-revalidate (serve instantly from cache, refresh cache
 // in the background from the network so updates are picked up next time).
 
-const CACHE_VERSION = 'tuner-senar-v5';
+const CACHE_VERSION = 'tuner-senar-v6';
 const APP_SHELL = [
   './',
   './index.html',

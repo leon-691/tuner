@@ -212,10 +212,11 @@
     border-radius:var(--radius-sm); overflow:hidden;
   }
   .mode-btn{
-    padding:9px 15px; font-size:.74rem; font-family:var(--sans); font-weight:600;
+    padding:9px 10px; font-size:.72rem; font-family:var(--sans); font-weight:600;
     background:transparent; border:none; color:var(--muted); cursor:pointer;
     transition:background .2s, color .2s;
     border-right:1px solid var(--wood-border);
+    flex:1; white-space:nowrap;
   }
   .mode-btn:last-child{border-right:none;}
   .mode-btn.active{background:var(--brass); color:var(--bg-deep);}
@@ -233,6 +234,11 @@
   .panel.mode-poly .freq-row{display:none;}
   .panel.mode-poly .cents-val{color:var(--brass-dim); font-size:.68rem;}
   .panel.mode-poly .note-name{font-size:clamp(2.6rem, 12vw, 3.6rem);}
+
+  .strobe-meter{display:none; margin-top:-8px;}
+  .panel.mode-strobe #meterSvg{display:none;}
+  .panel.mode-strobe .strobe-meter{display:block;}
+  .strobe-meter path{transition:fill .25s;}
 
   .meter-wrap{width:100%; display:flex; flex-direction:column; align-items:center;}
   .meter{width:100%; max-width:340px; display:block; overflow:visible;}
@@ -470,6 +476,7 @@
       <button class="mode-btn active" data-mode="auto" data-i18n="modeAuto">Otomatis</button>
       <button class="mode-btn" data-mode="manual" data-i18n="modeManual">Manual</button>
       <button class="mode-btn" data-mode="poly" data-i18n="modePoly">Poly</button>
+      <button class="mode-btn" data-mode="strobe" data-i18n="modeStrobe">Strobe</button>
     </div>
   </div>
 
@@ -485,6 +492,14 @@
           <line id="needleLine" x1="180" y1="190" x2="180" y2="54" stroke="#E8CE95" stroke-width="3" stroke-linecap="round"/>
           <circle id="needlePivot" cx="180" cy="190" r="7" fill="#C6A15B" stroke="#141110" stroke-width="2"/>
         </g>
+      </svg>
+
+      <svg class="meter strobe-meter" id="strobeSvg" viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+        <circle cx="120" cy="100" r="85" fill="none" stroke="#3B2E22" stroke-width="2"/>
+        <circle cx="120" cy="100" r="61" fill="none" stroke="#3B2E22" stroke-width="2"/>
+        <g id="strobeRing"></g>
+        <polygon points="120,6 113,20 127,20" fill="#E8CE95"/>
+        <circle id="strobeCenterDot" cx="120" cy="100" r="9" fill="#8A7148" stroke="#141110" stroke-width="2"/>
       </svg>
 
       <div class="readout idle" id="readout">
@@ -696,7 +711,7 @@
       shareCustomTuning: 'Share this custom tuning as a code',
       deleteCustomTuning: 'Delete this custom tuning',
       modeDetectionLabel: 'String detection mode',
-      modeAuto: 'Automatic', modeManual: 'Manual', modePoly: 'Poly',
+      modeAuto: 'Automatic', modeManual: 'Manual', modePoly: 'Poly', modeStrobe: 'Strobe',
       meterAriaLabel: 'Tuning meter',
       defaultStatus: 'Press "Start Tuning" then allow microphone access',
       defaultCents: '– cents',
@@ -808,7 +823,7 @@
       shareCustomTuning: 'Bagikan tuning kustom ini sebagai kode',
       deleteCustomTuning: 'Hapus tuning kustom ini',
       modeDetectionLabel: 'Mode deteksi senar',
-      modeAuto: 'Otomatis', modeManual: 'Manual', modePoly: 'Poly',
+      modeAuto: 'Otomatis', modeManual: 'Manual', modePoly: 'Poly', modeStrobe: 'Strobe',
       meterAriaLabel: 'Meter penyetelan nada',
       defaultStatus: 'Tekan "Mulai Tuning" lalu izinkan akses mikrofon',
       defaultCents: '– cents',
@@ -1398,6 +1413,30 @@
     setStatus(t('playingReferenceTone'), '');
   }
 
+  // Soft two-note confirmation chime (A5 + E6, a perfect fifth) played once
+  // whenever a string first settles into tune — a quiet audio counterpart to
+  // the haptic pulse, always on (no separate enable/disable control).
+  function playInTuneChime(){
+    if(!audioCtx) return;
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+    [880, 1318.51].forEach(function(freq, i){
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.value = 0.0001;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const start = now + i*0.03;
+      gain.gain.exponentialRampToValueAtTime(0.08, start+0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start+0.24);
+      osc.start(start);
+      osc.stop(start+0.26);
+    });
+    toneSuppressUntil = Math.max(toneSuppressUntil, performance.now() + 300);
+  }
+
   /* =========================================================
      6. DETECTION LOOP + STABILITY / SMOOTHING
   ========================================================= */
@@ -1462,6 +1501,7 @@
 
   let polySmooth = {};
   let polyLastSoundAt = 0;
+  let polyAllInTuneChimed = false;
 
   function runPolyDetectionTick(){
     if(!analyser) return;
@@ -1542,16 +1582,23 @@
       els.panel.classList.add('glow');
       els.hintText.textContent = t('inTuneText');
       els.hintText.className = 'hint ok';
+      if(!polyAllInTuneChimed){
+        playInTuneChime();
+        if(navigator.vibrate) navigator.vibrate(60);
+        polyAllInTuneChimed = true;
+      }
     } else {
       setStatus(t('polyPartial', inTuneCount, soundingCount), '');
       els.panel.classList.remove('glow');
       els.hintText.textContent = '';
+      polyAllInTuneChimed = false;
     }
   }
 
   function resetPolyState(){
     polySmooth = {};
     polyLastSoundAt = 0;
+    polyAllInTuneChimed = false;
     document.querySelectorAll('.peg').forEach(function(p){
       p.classList.remove('poly-green','poly-amber','poly-red');
       const c = p.querySelector('.peg-cents');
@@ -1563,11 +1610,30 @@
      7. RENDER LOOP (smooth needle motion + live waveform)
   ========================================================= */
   let displayCents = 0;
-  function renderLoop(){
+  let strobeAngle = 0;
+  let strobeLastTs = 0;
+  const STROBE_DEG_PER_SEC_PER_CENT = 3.2;
+  const STROBE_MAX_SPEED = 140;
+
+  function renderLoop(ts){
     if(!micActive) return;
     displayCents += (liveTargetCents - displayCents) * 0.25;
     const clamped = Math.max(-60, Math.min(60, displayCents));
     if(needleGroup) needleGroup.setAttribute('transform', 'rotate(' + (clamped*1.8).toFixed(2) + ' 180 190)');
+
+    if(state.mode === 'strobe' && strobeRingEl){
+      const now = ts || performance.now();
+      if(!strobeLastTs) strobeLastTs = now;
+      const dt = Math.min(0.1, (now - strobeLastTs)/1000);
+      strobeLastTs = now;
+      let speed = displayCents * STROBE_DEG_PER_SEC_PER_CENT;
+      speed = Math.max(-STROBE_MAX_SPEED, Math.min(STROBE_MAX_SPEED, speed));
+      strobeAngle = (strobeAngle + speed*dt) % 360;
+      strobeRingEl.setAttribute('transform', 'rotate(' + strobeAngle.toFixed(2) + ' 120 100)');
+    } else {
+      strobeLastTs = 0;
+    }
+
     drawWaveform();
     requestAnimationFrame(renderLoop);
   }
@@ -1621,6 +1687,8 @@
     installDismiss: document.getElementById('installDismiss')
   };
   const needleGroup = document.getElementById('needleGroup');
+  const strobeRingEl = document.getElementById('strobeRing');
+  const strobeCenterDot = document.getElementById('strobeCenterDot');
   const waveCanvas = document.getElementById('waveCanvas');
   const waveCtx = waveCanvas.getContext('2d');
 
@@ -1668,6 +1736,7 @@
     els.panel.classList.remove('glow');
     liveTargetCents = 0; displayCents = 0;
     if(needleGroup) needleGroup.setAttribute('transform','rotate(0 180 190)');
+    if(strobeCenterDot) strobeCenterDot.setAttribute('fill', state.theme==='light' ? '#8A6B35' : '#8A7148');
     document.querySelectorAll('.peg').forEach(function(p){
       p.classList.remove('nearest','selected','in-tune','poly-green','poly-amber','poly-red');
       const c = p.querySelector('.peg-cents');
@@ -1689,6 +1758,16 @@
     els.targetFreq.textContent = '(target ' + data.target.freq.toFixed(2) + ' Hz)';
     els.centsVal.textContent = (rounded>=0?'+':'') + rounded + ' cents';
 
+    if(strobeCenterDot){
+      const light = state.theme === 'light';
+      const dotColors = {
+        'state-green': light ? '#2F7A3D' : '#6FBE7A',
+        'state-amber': light ? '#8C5714' : '#E3A94A',
+        'state-red':   light ? '#9C3A24' : '#D9694B'
+      };
+      strobeCenterDot.setAttribute('fill', dotColors[cls] || dotColors['state-red']);
+    }
+
     liveTargetCents = data.cents;
 
     const now = performance.now();
@@ -1701,6 +1780,7 @@
         setStatus(t('stringInTune', data.target.string), 'success');
         els.panel.classList.add('glow');
         if(!smooth.vibrated){
+          playInTuneChime();
           if(navigator.vibrate) navigator.vibrate(60);
           smooth.vibrated = true;
         }
@@ -1843,6 +1923,32 @@
     els.tabUnderline.style.transform = 'translateX(' + (idx*100) + '%)';
   }
 
+  function getStrobeColors(){
+    const light = state.theme === 'light';
+    return light ? { a:'#2B2318', b:'#F7F1E4' } : { a:'#E8CE95', b:'#141110' };
+  }
+
+  function buildStrobeRing(){
+    if(!strobeRingEl) return;
+    strobeRingEl.innerHTML = '';
+    const colors = getStrobeColors();
+    const N = 32;
+    const cx=120, cy=100, r1=61, r2=85;
+    for(let i=0;i<N;i++){
+      const a0 = (i/N) * 2*Math.PI;
+      const a1 = ((i+1)/N) * 2*Math.PI;
+      const x1o = cx + r2*Math.cos(a0), y1o = cy + r2*Math.sin(a0);
+      const x2o = cx + r2*Math.cos(a1), y2o = cy + r2*Math.sin(a1);
+      const x1i = cx + r1*Math.cos(a1), y1i = cy + r1*Math.sin(a1);
+      const x2i = cx + r1*Math.cos(a0), y2i = cy + r1*Math.sin(a0);
+      const d = 'M'+x1o+','+y1o+' A'+r2+','+r2+' 0 0 1 '+x2o+','+y2o+' L'+x1i+','+y1i+' A'+r1+','+r1+' 0 0 0 '+x2i+','+y2i+' Z';
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', i%2===0 ? colors.a : colors.b);
+      strobeRingEl.appendChild(path);
+    }
+  }
+
   function buildTicks(){
     const g = document.getElementById('ticks');
     g.innerHTML = '';
@@ -1892,6 +1998,7 @@
     document.getElementById('needlePivot').setAttribute('fill', brass);
     document.getElementById('needlePivot').setAttribute('stroke', bg);
     buildTicks();
+    buildStrobeRing();
   }
 
   function applyTheme(){
@@ -2176,8 +2283,12 @@
       resetPolyState();
       resetReadout();
       els.panel.classList.toggle('mode-poly', state.mode==='poly');
+      els.panel.classList.toggle('mode-strobe', state.mode==='strobe');
+      if(state.mode==='strobe'){ strobeAngle = 0; strobeLastTs = 0; }
       if(state.mode==='poly'){
         setStatus(t('polyWaitingPrompt'), '');
+      } else if(!els.statusLine.classList.contains('warn')){
+        setStatus(micActive ? t('listening') : t('stoppedListening'), '');
       }
       if(micActive && (state.mode==='poly' || previousMode==='poly')){
         applyInstrumentConfig();
@@ -2371,6 +2482,7 @@
     registerServiceWorker();
     maybeShowInstallBanner();
     els.panel.classList.toggle('mode-poly', state.mode==='poly');
+    els.panel.classList.toggle('mode-strobe', state.mode==='strobe');
 
     if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
       setStatus(t('micNotSupported'), 'warn');
